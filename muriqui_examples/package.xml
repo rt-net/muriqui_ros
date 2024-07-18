@@ -14,8 +14,10 @@
 
   <depend>python3-pandas</depend>
   <depend>rclpy</depend>
+  <depend>rt_usb_9axisimu_driver</depend>
   <depend>sensor_msgs</depend>
   <depend>std_msgs</depend>
+  <depend>usb_cam</depend>
 
   <export>
     <build_type>ament_cmake</build_type>

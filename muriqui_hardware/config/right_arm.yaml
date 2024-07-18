@@ -1,0 +1,16 @@
+joint_groups:
+  group:
+    joints:
+      - r_arm_joint1
+      - r_arm_joint2
+      - r_arm_joint3
+    sync_read:
+      - position
+      - velocity
+      - current
+    sync_write:
+      - position
+
+r_arm_joint1: { id: 2, dynamixel: "XM430", operating_mode: 3 }
+r_arm_joint2: { id: 3, dynamixel: "XM430", operating_mode: 3 }
+r_arm_joint3: { id: 4, dynamixel: "XM430", operating_mode: 3 }

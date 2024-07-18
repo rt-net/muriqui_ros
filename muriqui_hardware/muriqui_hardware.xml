@@ -1,0 +1,9 @@
+<library path="muriqui_hardware">
+  <class name="muriqui_hardware/MuriquiHardware"
+         type="muriqui_hardware::MuriquiHardware"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      The muriqui hardware plugin for the ros2_control.
+    </description>
+  </class>
+</library>

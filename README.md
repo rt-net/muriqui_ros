@@ -14,24 +14,9 @@ cd ~/muriqui_ws/src
 # Download muriqui_ros, muriqui_description, muriqui_msgs and rt_manipulators_cpp here
 ```
 
-### Install custom ros2_control package
+### Install dependencies
 
 ```bash
-sudo apt install python3-vcstool
-cd ~/ros2_control_ws/src
-vcs import < ~/muriqui_ws/src/muriqui_ros/muriqui_ros.repos
-
-rosdep install -iry --from-paths . 
-
-cd ~/ros2_control_ws
-colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
-```
-
-### Install other dependencies
-
-```bash
-source ~/ros2_control_ws/install/setup.bash
-
 cd ~/muriqui_ws/src
 rosdep install -iry --from-paths .
 ```
@@ -39,8 +24,6 @@ rosdep install -iry --from-paths .
 ### Build
 
 ```bash
-source ~/ros2_control_ws/install/setup.bash
-
 cd ~/muriqui_ws
 colcon build --symlink-install
 ```
@@ -56,8 +39,41 @@ source ~/ros2_control_ws/install/setup.bash
 source ~/muriqui_ws/install/setup.bash 
 ```
 
+### Create symbolic links
+
+This command creates symbolic links of USB devices.
+You must execute this command before using the real robot.
+
+```bash
+ros2 run muriqui_hardware create_symbolic_links 
+```
+
+### Launch real robot
+
+Execute the following command to launch the Muriqui
+
+```bash
+ros2 launch muriqui_examples demo.launch.py mock:=false
+```
+
+Execute the following command to launch the muriqui without the sensors:
+
+```bash
+ros2 launch muriqui_examples demo.launch.py mock:=false use_head_camera:=false use_imu:=false
+```
+
+### Launch real robot with mock hardware
+
+You can replace the servo motors with mocks to test your application.
+Execute the following command to launch the Muriqui with mock hardware:
+
+```bash
+ros2 launch muriqui_examples demo.launch.py mock:=true
+```
+
 ### Launch Gazebo simulator
 
+Instead of running the real robot, you can simulate it on Gazebo.
 Execute the following command to launch the muriqui in gazebo:
 
 ```bash
@@ -68,31 +84,6 @@ Execute the following command to launch the muriqui in gazebo without the sensor
 
 ```bash
 ros2 launch muriqui_gazebo muriqui_gazebo.launch.py use_head_camera:=false use_imu:=false
-```
-
-### Create symbolic links
-
-This command creates symbolic links of USB devices.
-You must execute this command before using the real robot.
-
-```bash
-ros2 run muriqui_hardware create_symbolic_links 
-```
-
-### Launch real robot with mock hardware
-
-Execute the following command to launch the Muriqui with mock hardware:
-
-```bash
-ros2 launch muriqui_examples demo.launch.py mock:=true
-```
-
-### Launch real robot
-
-Execute the following command to launch the Muriqui
-
-```bash
-ros2 launch muriqui_examples demo.launch.py mock:=false
 ```
 
 ## Examples
