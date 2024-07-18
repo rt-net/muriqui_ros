@@ -1,0 +1,22 @@
+joint_groups:
+  group:
+    joints:
+      - r_leg_joint1
+      - r_leg_joint2
+      - r_leg_joint3
+      - r_leg_joint4
+      - r_leg_joint5
+      - r_leg_joint6
+    sync_read:
+      - position
+      - velocity
+      - current
+    sync_write:
+      - position
+
+r_leg_joint1: { id: 22, dynamixel: "XM540", operating_mode: 3 }
+r_leg_joint2: { id: 23, dynamixel: "XM540", operating_mode: 3 }
+r_leg_joint3: { id: 24, dynamixel: "XM540", operating_mode: 3 }
+r_leg_joint4: { id: 25, dynamixel: "XM540", operating_mode: 3 }
+r_leg_joint5: { id: 26, dynamixel: "XM540", operating_mode: 3 }
+r_leg_joint6: { id: 27, dynamixel: "XM540", operating_mode: 3 }

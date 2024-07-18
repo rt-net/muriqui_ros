@@ -1,0 +1,14 @@
+joint_groups:
+  group:
+    joints:
+      - neck_joint1 
+      - neck_joint2
+    sync_read:
+      - position
+      - velocity
+      - current
+    sync_write:
+      - position
+
+neck_joint1: { id: 42, dynamixel: "XH430", operating_mode: 3 }
+neck_joint2: { id: 43, dynamixel: "XH430", operating_mode: 3 }

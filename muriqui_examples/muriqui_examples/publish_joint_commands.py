@@ -66,6 +66,16 @@ class JointCommandsPublisher(Node):
     def get_goal_names(self) -> list[str]:
         return self._joint_targets.columns.difference(['group', 'joint']).tolist()
 
+    def publish_present_positions_repeatedly(self, timeout: float) -> None:
+        # Publish present positions of all joints.
+        present_positions = self._extract_present_positions_by_group()
+
+        start_time = time.time()
+        while time.time() - start_time < timeout:
+            for group_name in self._joint_targets['group'].unique():
+                self._publish_joint_commands(group_name, present_positions[group_name])
+            time.sleep(0.1)
+
     def move_to(self, goal_name: str, duration=3.0, dt=0.01) -> None:
         # Move all joints from present positions to goal positions defined in CSV file.
 
@@ -158,6 +168,9 @@ def main() -> None:
     if not node.load_csv(args.csv_filepath):
         logger.error("Failed to load CSV file.")
         return
+
+    # Publish present positions of all joints to establish stable communication.
+    node.publish_present_positions_repeatedly(2.0)
 
     for goal_name in node.get_goal_names():
         logger.info("goal_name: " + goal_name)

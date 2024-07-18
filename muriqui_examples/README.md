@@ -39,3 +39,8 @@ pose1:
 pose2:
 
 ![pose2](resources/pose2.png)
+
+## Notes
+
+- The camera_info.yaml was generated according to the following calibration procedure:
+  - https://rt-net.github.io/tutorials/cranev2/ros/camera-calibration.html

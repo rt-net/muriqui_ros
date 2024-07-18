@@ -1,0 +1,185 @@
+# Copyright 2024 RT Corporation
+
+import os
+
+from ament_index_python.packages import get_package_share_directory
+from muriqui_description.robot_description_loader import RobotDescriptionLoader
+from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument
+from launch.actions import EmitEvent
+from launch.actions import IncludeLaunchDescription
+from launch.actions import RegisterEventHandler
+from launch.events import matches_action
+from launch.conditions import IfCondition
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration
+from launch_ros.actions import LifecycleNode
+from launch_ros.actions import Node
+from launch_ros.events import lifecycle
+from launch_ros.event_handlers import OnStateTransition
+from lifecycle_msgs.msg import Transition
+
+
+def config_path(file_name: str) -> str:
+    return os.path.join(
+        get_package_share_directory('muriqui_hardware'),
+        'config',
+        file_name
+    )
+
+
+def generate_launch_description():
+    declare_mock = DeclareLaunchArgument(
+        'mock',
+        default_value='false',
+        description='Set "true" to use mock hardware.'
+    )
+
+    declare_use_camera = DeclareLaunchArgument(
+        'use_camera',
+        default_value='true',
+        description='Set "true" to use head camera.'
+    )
+
+    declare_video_device = DeclareLaunchArgument(
+        'video_device',
+        default_value='/dev/video0',
+        description='Set a device file path for head camera.'
+    )
+
+    declare_use_imu = DeclareLaunchArgument(
+        'use_imu',
+        default_value='true',
+        description='Set "true" to use IMU module.'
+    )
+
+    rdl = RobotDescriptionLoader()
+    rdl.use_right_arm_mock = LaunchConfiguration('mock')
+    rdl.use_right_leg_mock = LaunchConfiguration('mock')
+    rdl.use_left_arm_mock = LaunchConfiguration('mock')
+    rdl.use_left_leg_mock = LaunchConfiguration('mock')
+    rdl.use_neck_mock = LaunchConfiguration('mock')
+
+    rdl.right_arm_port_name = '/dev/muriqui_right_arm'
+    rdl.right_leg_port_name = '/dev/muriqui_right_leg'
+    rdl.left_arm_port_name = '/dev/muriqui_left_arm'
+    rdl.left_leg_port_name = '/dev/muriqui_left_leg'
+    rdl.neck_port_name = '/dev/muriqui_neck'
+
+    rdl.right_arm_config_path = config_path('right_arm.yaml')
+    rdl.right_leg_config_path = config_path('right_leg.yaml')
+
+    rdl.left_arm_config_path = config_path('left_arm.yaml')
+    rdl.left_leg_config_path = config_path('left_leg.yaml')
+
+    rdl.neck_config_path = config_path('neck.yaml')
+
+    rdl.baudrate = '4000000'
+    rdl.timeout_seconds = '1.0'
+
+    description = rdl.load()
+
+    control_node = IncludeLaunchDescription(
+            PythonLaunchDescriptionSource([
+                get_package_share_directory('muriqui_control'),
+                '/launch/muriqui_control.launch.py']),
+            launch_arguments={'loaded_description': description}.items()
+        )
+
+    display_launch = IncludeLaunchDescription(
+            PythonLaunchDescriptionSource([
+                get_package_share_directory('muriqui_description'),
+                '/launch/display.launch.py']),
+            launch_arguments={
+                'loaded_description': description,
+                'jsp_gui': 'false',
+                'jsp': 'false',
+                }.items()
+        )
+
+    camera_info_file = 'file://' + get_package_share_directory(
+        'muriqui_examples') + '/config/camera_info.yaml'
+
+    usb_cam_node = Node(
+        package='usb_cam',
+        executable='usb_cam_node_exe',
+        namespace='head_camera/color',
+        parameters=[
+            {'camera_name': 'head_camera'},
+            {'video_device': LaunchConfiguration('video_device')},
+            {'camera_info_url': camera_info_file},
+            {'frame_rate': 30.0},
+            {'frame_id': 'head_camera_color_optical_frame'},
+            {'image_height': 720},
+            {'image_width': 1280},
+            {'pixel_format': 'mjpeg2rgb'}
+        ],
+        condition=IfCondition(LaunchConfiguration('use_camera'))
+    )
+
+    imu = LifecycleNode(
+        namespace='',
+        name='rt_usb_9axisimu_driver',
+        package='rt_usb_9axisimu_driver',
+        executable='rt_usb_9axisimu_driver',
+        output='screen',
+        parameters=[{
+            'port': "/dev/ttyACM0",
+        }],
+        condition=IfCondition(LaunchConfiguration('use_imu'))
+    )
+
+    emit_configuring_event = EmitEvent(
+        event=lifecycle.ChangeState(
+            lifecycle_node_matcher=matches_action(imu),
+            transition_id=Transition.TRANSITION_CONFIGURE,
+        )
+    )
+
+    emit_activating_event = EmitEvent(
+        event=lifecycle.ChangeState(
+            lifecycle_node_matcher=matches_action(imu),
+            transition_id=Transition.TRANSITION_ACTIVATE,
+        )
+    )
+
+    register_activating_transition = RegisterEventHandler(
+        OnStateTransition(
+            target_lifecycle_node=imu,
+            goal_state='inactive',
+            entities=[
+                emit_activating_event
+            ],
+        )
+    )
+
+    imu_filter = Node(
+        package='imu_complementary_filter',
+        executable='complementary_filter_node',
+        name='complementary_filter_gain_node',
+        output='screen',
+        parameters=[
+            {'do_bias_estimation': True},
+            {'do_adaptive_gain': True},
+            {'use_mag': False},
+            {'gain_acc': 0.01},
+            {'gain_mag': 0.01},
+            {'publish_tf': True},
+            {'reverse_tf': True},
+        ],
+        condition=IfCondition(LaunchConfiguration('use_imu'))
+    )
+
+    return LaunchDescription([
+        declare_mock,
+        declare_use_camera,
+        declare_video_device,
+        declare_use_imu,
+        control_node,
+        display_launch,
+        usb_cam_node,
+        imu,
+        register_activating_transition,
+        emit_configuring_event,
+        imu_filter
+    ])
