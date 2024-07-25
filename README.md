@@ -28,6 +28,16 @@ cd ~/muriqui_ws
 colcon build --symlink-install
 ```
 
+### Create udev rules
+
+Execute the following command to create symbolic links to devices such as camera, IMU, etc.
+
+```bash
+# This command creates symbolic links (e.g. /dev/muriqui_head_camera, /dev/muriqui_imu).
+source ~/muriqui_ws/install/setup.bash 
+ros2 run muriqui_tools create_udev_rules.sh
+```
+
 ## Usage
 
 ### Install ROS environment
@@ -35,7 +45,6 @@ colcon build --symlink-install
 Execute the following command in each new terminal before using ROS 2 commands:
 
 ```bash
-source ~/ros2_control_ws/install/setup.bash
 source ~/muriqui_ws/install/setup.bash 
 ```
 

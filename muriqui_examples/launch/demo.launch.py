@@ -43,7 +43,7 @@ def generate_launch_description():
 
     declare_video_device = DeclareLaunchArgument(
         'video_device',
-        default_value='/dev/video0',
+        default_value='/dev/muriqui_head_camera',
         description='Set a device file path for head camera.'
     )
 
@@ -51,6 +51,24 @@ def generate_launch_description():
         'use_imu',
         default_value='true',
         description='Set "true" to use IMU module.'
+    )
+
+    declare_imu_device = DeclareLaunchArgument(
+        'imu_device',
+        default_value='/dev/muriqui_imu',
+        description='Set a device file path for IMU.'
+    )
+
+    declare_use_board = DeclareLaunchArgument(
+        'use_board',
+        default_value='true',
+        description='Set "true" to use Muriqui board.'
+    )
+
+    declare_board_device = DeclareLaunchArgument(
+        'board_device',
+        default_value='/dev/muriqui_board',
+        description='Set a device file path for Muriqui board.'
     )
 
     rdl = RobotDescriptionLoader()
@@ -124,7 +142,7 @@ def generate_launch_description():
         executable='rt_usb_9axisimu_driver',
         output='screen',
         parameters=[{
-            'port': "/dev/ttyACM0",
+            'port': LaunchConfiguration('imu_device'),
         }],
         condition=IfCondition(LaunchConfiguration('use_imu'))
     )
@@ -170,16 +188,32 @@ def generate_launch_description():
         condition=IfCondition(LaunchConfiguration('use_imu'))
     )
 
+    muriqui_board = Node(
+        package='muriqui_hardware',
+        executable='muriqui_board_node.py',
+        name='muriqui_board',
+        output='screen',
+        parameters=[
+            {'port': LaunchConfiguration('board_device')},
+            {'baudrate': 115200},
+        ],
+        condition=IfCondition(LaunchConfiguration('use_imu'))
+    )
+
     return LaunchDescription([
         declare_mock,
         declare_use_camera,
         declare_video_device,
         declare_use_imu,
+        declare_imu_device,
+        declare_use_board,
+        declare_board_device,
         control_node,
         display_launch,
         usb_cam_node,
         imu,
         register_activating_transition,
         emit_configuring_event,
-        imu_filter
+        imu_filter,
+        muriqui_board
     ])

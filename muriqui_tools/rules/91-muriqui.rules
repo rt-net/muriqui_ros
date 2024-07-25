@@ -1,0 +1,3 @@
+SUBSYSTEM=="tty", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="0069", SYMLINK+="muriqui_board"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="2b72", ATTRS{idProduct}=="0003", SYMLINK+="muriqui_imu"
+SUBSYSTEM=="video4linux", ATTRS{idVendor}=="1bcf", ATTRS{idProduct}=="2281", ATTR{index}=="0",SYMLINK+="muriqui_head_camera"
