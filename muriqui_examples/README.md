@@ -40,6 +40,25 @@ pose2:
 
 ![pose2](resources/pose2.png)
 
+## Muriqui Board example
+
+This sample communicates with the board mounted on Muriqui.
+
+- Pressing the button on the back of Muriqui lights up the LED.
+- Log output of motor power supply voltage.
+
+Execute the following command to start node.
+
+```sh
+ros2 run muriqui_examples muriqui_board_example.py
+...
+
+[INFO] [1721724958.032168197] [muriqui_board_example]: Button0: False
+[INFO] [1721724958.032353031] [muriqui_board_example]: Button1: False
+[INFO] [1721724958.032501322] [muriqui_board_example]: Button2: False
+[INFO] [1721724958.032757301] [muriqui_board_example]: Motor Power voltages is: 11.1
+```
+
 ## Notes
 
 - The camera_info.yaml was generated according to the following calibration procedure:

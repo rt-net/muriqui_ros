@@ -11,6 +11,7 @@ find_package(ament_cmake_python REQUIRED)
 
 ament_python_install_package(${PROJECT_NAME})
 install(PROGRAMS
+    ${PROJECT_NAME}/muriqui_board_example.py
     ${PROJECT_NAME}/publish_joint_commands.py
     DESTINATION lib/${PROJECT_NAME})
 

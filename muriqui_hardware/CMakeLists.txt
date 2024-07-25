@@ -70,10 +70,20 @@ install(DIRECTORY
   DESTINATION share/${PROJECT_NAME}/
 )
 
+ament_python_install_package(${PROJECT_NAME})
+install(PROGRAMS
+  ${PROJECT_NAME}/muriqui_board_node.py
+  ${PROJECT_NAME}/muriqui_comm.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   set(ament_cmake_copyright_FOUND TRUE)  # Skip copyright checks
   ament_lint_auto_find_test_dependencies()
+
+  find_package(ament_cmake_pytest REQUIRED)
+  ament_add_pytest_test(test_muriqui_comm test/test_muriqui_comm.py)
 endif()
 
 ament_export_include_directories(

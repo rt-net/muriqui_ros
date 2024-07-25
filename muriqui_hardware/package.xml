@@ -10,12 +10,16 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>ament_index_cpp</depend>
-  <depend>muriqui_description</depend>
-  <depend>muriqui_control</depend>
   <depend>controller_manager</depend>
   <depend>hardware_interface</depend>
+  <depend>muriqui_control</depend>
+  <depend>muriqui_description</depend>
+  <depend>muriqui_msgs</depend>
   <depend>pluginlib</depend>
+  <depend>python3-pytest-mock</depend>
+  <depend>python3-serial</depend>
   <depend>rclcpp</depend>
+  <depend>rclpy</depend>
   <depend>ros2_controllers</depend>
   <depend>rt_manipulators_cpp</depend>
   <depend>yaml-cpp</depend>
@@ -23,6 +27,7 @@
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
+  <test_depend>ament_cmake_pytest</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
