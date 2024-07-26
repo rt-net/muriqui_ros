@@ -117,22 +117,6 @@ def generate_launch_description():
                 output='screen'
             )
 
-    imu_filter = Node(
-                package='imu_complementary_filter',
-                executable='complementary_filter_node',
-                name='complementary_filter_gain_node',
-                output='screen',
-                parameters=[
-                    {'do_bias_estimation': True},
-                    {'do_adaptive_gain': True},
-                    {'use_mag': False},
-                    {'gain_acc': 0.01},
-                    {'gain_mag': 0.01},
-                    {'publish_tf': True},
-                    {'reverse_tf': True},
-                ],
-            )
-
     ld = LaunchDescription()
     ld.add_action(SetParameter(name='use_sim_time', value=True))
     ld.add_action(declare_use_head_camera)
@@ -147,5 +131,4 @@ def generate_launch_description():
     ld.add_action(spawn_left_leg_controller)
     ld.add_action(spawn_neck_controller)
     ld.add_action(bridge)
-    ld.add_action(imu_filter)
     return ld
