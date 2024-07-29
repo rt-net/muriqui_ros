@@ -1,4 +1,4 @@
-group,joint,1all_zero,2pose1,3all_zero,4pose2
+group,joint,all_zero,pose1,all_zero,pose2
 neck,neck_joint1,0,0.6,0,-0.6
 neck,neck_joint2,0,0.2,0,-0.2
 right_arm,r_arm_joint1,0,0,0,1.57
