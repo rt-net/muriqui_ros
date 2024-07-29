@@ -64,7 +64,9 @@ class JointCommandsPublisher(Node):
         return True
 
     def get_goal_names(self) -> list[str]:
-        return self._joint_targets.columns.difference(['group', 'joint']).tolist()
+        # Do not use pd.DataFrame.columns.difference() to keep the order of columns.
+        exclude_columns = ['group', 'joint']
+        return [col for col in self._joint_targets.columns if col not in exclude_columns]
 
     def publish_present_positions_repeatedly(self, timeout: float) -> None:
         # Publish present positions of all joints.
