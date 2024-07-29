@@ -17,7 +17,6 @@
   <depend>ros2_controllers</depend>
   <depend>ros_gz</depend>
   <depend>robot_state_publisher</depend>
-  <depend>imu_tools</depend>
 
   <export>
     <build_type>ament_cmake</build_type>
