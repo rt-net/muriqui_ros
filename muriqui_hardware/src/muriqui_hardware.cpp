@@ -1,5 +1,7 @@
 // Copyright 2024 RT Corporation
 
+#include <yaml-cpp/yaml.h>
+
 #include <limits>
 #include <memory>
 #include <string>
@@ -15,22 +17,9 @@ namespace muriqui_hardware
 static rclcpp::Logger LOGGER = rclcpp::get_logger("MuriquiHardware");
 constexpr auto GROUP_NAME = "group";
 
-constexpr auto START_P_GAIN = 1000;
-constexpr auto START_I_GAIN = 0;
-constexpr auto START_D_GAIN = 0;
-// constexpr auto STOP_P_GAIN = 5;
-// constexpr auto STOP_I_GAIN = 0;
-// constexpr auto STOP_D_GAIN = 0;
-
 MuriquiHardware::~MuriquiHardware()
 {
   if (hardware_) {
-    // Set low PID gains for safe shutdown.
-    // if (!hardware_->write_position_pid_gain_to_group(
-    //     GROUP_NAME, STOP_P_GAIN, STOP_I_GAIN, STOP_D_GAIN))
-    // {
-    //   RCLCPP_ERROR(LOGGER, "Failed to set PID gains.");
-    // }
     hardware_->disconnect();
   }
 }
@@ -115,6 +104,29 @@ CallbackReturn MuriquiHardware::on_init(
     return CallbackReturn::ERROR;
   }
 
+  // Load PID gains from config file and set them to the joints.
+  YAML::Node config = YAML::LoadFile(config_file_path);
+  for (const auto & joint : info_.joints) {
+    if (!config[joint.name]) {
+      continue;
+    }
+
+    YAML::Node params = config[joint.name];
+    if (!params["pos_p"] || !params["pos_i"] || !params["pos_d"]) {
+      continue;
+    }
+
+    if (!hardware_->write_position_pid_gain(
+        joint.name,
+        params["pos_p"].as<int>(),
+        params["pos_i"].as<int>(),
+        params["pos_d"].as<int>()))
+    {
+      RCLCPP_ERROR(LOGGER, "Failed to set PID gain to joint '%s'.", joint.name.c_str());
+      return CallbackReturn::ERROR;
+    }
+  }
+
   timeout_seconds_ = std::stod(info_.hardware_parameters["timeout_seconds"]);
   steady_clock_ = rclcpp::Clock(RCL_STEADY_TIME);
 
@@ -177,13 +189,6 @@ CallbackReturn MuriquiHardware::on_activate(const rclcpp_lifecycle::State & /*pr
   }
   write(prev_comm_timestamp_, rclcpp::Duration::from_seconds(0));
 
-  if (!hardware_->write_position_pid_gain_to_group(
-      GROUP_NAME, START_P_GAIN, START_I_GAIN, START_D_GAIN))
-  {
-    RCLCPP_ERROR(LOGGER, "Failed to set PID gains.");
-    return CallbackReturn::ERROR;
-  }
-
   if (!hardware_->torque_on(GROUP_NAME)) {
     RCLCPP_ERROR(LOGGER, "Failed to set torque on.");
     return CallbackReturn::ERROR;
@@ -194,14 +199,6 @@ CallbackReturn MuriquiHardware::on_activate(const rclcpp_lifecycle::State & /*pr
 
 CallbackReturn MuriquiHardware::on_deactivate(const rclcpp_lifecycle::State & /*previous_state*/)
 {
-  // Set low PID gains for safe stopping.
-//   if (!hardware_->write_position_pid_gain_to_group(
-//       GROUP_NAME, STOP_P_GAIN, STOP_I_GAIN, STOP_D_GAIN))
-//   {
-//     RCLCPP_ERROR(LOGGER, "Failed to set PID gains.");
-//     return CallbackReturn::ERROR;
-//   }
-
   return CallbackReturn::SUCCESS;
 }
 
