@@ -34,6 +34,7 @@ class JointCommandsPublisher(Node):
             Float64MultiArray, '/neck_controller/commands', 10)
 
         self._joint_targets = None
+        self._goal_configs = None
 
         def joint_state_callback(msg):
             self._joint_state = msg
@@ -57,6 +58,8 @@ class JointCommandsPublisher(Node):
             self.get_logger().error("Please wait for joint state update before loading CSV file.")
             return False
 
+        self._extract_config()
+
         if not self._joint_targets_have_valid_group() or\
            not self._joint_targets_have_valid_joint():
             return False
@@ -78,13 +81,15 @@ class JointCommandsPublisher(Node):
                 self._publish_joint_commands(group_name, present_positions[group_name])
             time.sleep(0.1)
 
-    def move_to(self, goal_name: str, duration=3.0, dt=0.01) -> None:
+    def move_to(self, goal_name: str) -> None:
         # Move all joints from present positions to goal positions defined in CSV file.
 
         start_positions = self._extract_present_positions_by_group()
         goal_positions = self._extract_goal_positions_by_group(goal_name)
+        duration = self._get_config_value('DURATION', goal_name)
+        DT = self._get_config_value('DT', goal_name)
 
-        total_elapsed_time = 0.0
+        total_elapsed_time = self._get_config_value('TIME_OFFSET', goal_name)
         while total_elapsed_time < duration:
             step_start_time = time.time()
             fraction = total_elapsed_time / duration
@@ -97,9 +102,19 @@ class JointCommandsPublisher(Node):
                 self._publish_joint_commands(group_name, eased_positions)
 
             step_elapsed_time = time.time() - step_start_time
-            sleep_time = max(0, dt - step_elapsed_time)
+            sleep_time = max(0, DT - step_elapsed_time)
             total_elapsed_time += sleep_time
             time.sleep(sleep_time)
+
+    def _extract_config(self):
+        # Extract goal configurations from joint_targets.
+        self._goal_configs = self._joint_targets[
+            self._joint_targets['group'] == 'CONFIG'].drop(columns='group').reset_index(drop=True)
+        self._joint_targets = self._joint_targets.drop(self._goal_configs.index)
+
+    def _get_config_value(self, config_name, goal_name) -> float:
+        return self._goal_configs.loc[
+            self._goal_configs['joint'] == config_name, goal_name].values[0]
 
     def _joint_targets_have_valid_group(self) -> bool:
         unique_groups = self._joint_targets['group'].unique()
@@ -176,14 +191,10 @@ def main() -> None:
 
     for goal_name in node.get_goal_names():
         logger.info("goal_name: " + goal_name)
-        node.move_to(goal_name, duration=3.0, dt=COMM_CYCLE)
+        node.move_to(goal_name)
 
 
 if __name__ == '__main__':
-    # Communication cycle of controllers.
-    # This value depends on muriqui_control/config/muriqui_control.yaml.
-    COMM_CYCLE = 0.01  # seconds
-
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument(
         '--csv_filepath',
