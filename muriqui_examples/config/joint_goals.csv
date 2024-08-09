@@ -1,4 +1,7 @@
 group,joint,all_zero,pose1,all_zero,pose2
+CONFIG,DURATION,3.0,3.0,3.0,3.0
+CONFIG,DT,0.01,0.01,0.01,0.01
+CONFIG,TIME_OFFSET,0.0,0.0,0.0,0.0
 neck,neck_joint1,0,0.6,0,-0.6
 neck,neck_joint2,0,0.2,0,-0.2
 right_arm,r_arm_joint1,0,0,0,1.57
