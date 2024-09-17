@@ -8,7 +8,9 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.actions import EmitEvent
 from launch.actions import IncludeLaunchDescription
+from launch.actions import OpaqueFunction
 from launch.actions import RegisterEventHandler
+from launch.actions import SetLaunchConfiguration
 from launch.events import matches_action
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -71,23 +73,42 @@ def generate_launch_description():
         description='Set a device file path for Muriqui board.'
     )
 
+    declare_arm_4joints = DeclareLaunchArgument(
+        'arm_4joints', default_value='false',
+        description=('Set "true" to use arm joint 4DoF model')
+    )
+
+    R_ARM_CONFIG = "r_arm_config"
+    L_ARM_CONFIG = "l_arm_config"
+
+    def arm_configuration(context, config_name: str, prefix: str):
+        param_path = config_path(prefix + '_arm.yaml')
+        if context.launch_configurations['arm_4joints'] == 'true':
+            param_path = config_path(prefix + '_arm4.yaml')
+
+        return [SetLaunchConfiguration(name=config_name, value=param_path)]
+
+    set_right_arm_config = OpaqueFunction(function=arm_configuration, args=[R_ARM_CONFIG, 'right'])
+    set_left_arm_config = OpaqueFunction(function=arm_configuration, args=[L_ARM_CONFIG, 'left'])
+
     rdl = RobotDescriptionLoader()
     rdl.use_right_arm_mock = LaunchConfiguration('mock')
     rdl.use_right_leg_mock = LaunchConfiguration('mock')
     rdl.use_left_arm_mock = LaunchConfiguration('mock')
     rdl.use_left_leg_mock = LaunchConfiguration('mock')
     rdl.use_neck_mock = LaunchConfiguration('mock')
+    rdl.arm_4joints = LaunchConfiguration('arm_4joints')
 
     rdl.right_arm_port_name = '/dev/muriqui_right_arm'
     rdl.right_leg_port_name = '/dev/muriqui_right_leg'
     rdl.left_arm_port_name = '/dev/muriqui_left_arm'
     rdl.left_leg_port_name = '/dev/muriqui_left_leg'
     rdl.neck_port_name = '/dev/muriqui_neck'
+    rdl.right_arm_config_path = LaunchConfiguration(R_ARM_CONFIG)
+    rdl.left_arm_config_path = LaunchConfiguration(L_ARM_CONFIG)
 
-    rdl.right_arm_config_path = config_path('right_arm.yaml')
     rdl.right_leg_config_path = config_path('right_leg.yaml')
 
-    rdl.left_arm_config_path = config_path('left_arm.yaml')
     rdl.left_leg_config_path = config_path('left_leg.yaml')
 
     rdl.neck_config_path = config_path('neck.yaml')
@@ -101,7 +122,10 @@ def generate_launch_description():
             PythonLaunchDescriptionSource([
                 get_package_share_directory('muriqui_control'),
                 '/launch/muriqui_control.launch.py']),
-            launch_arguments={'loaded_description': description}.items()
+            launch_arguments={
+                'loaded_description': description,
+                'arm_4joints': rdl.arm_4joints,
+                }.items()
         )
 
     display_launch = IncludeLaunchDescription(
@@ -191,6 +215,10 @@ def generate_launch_description():
         declare_imu_device,
         declare_use_board,
         declare_board_device,
+        declare_arm_4joints,
+        set_right_arm_config,
+        set_left_arm_config,
+
         control_node,
         display_launch,
         usb_cam_node,

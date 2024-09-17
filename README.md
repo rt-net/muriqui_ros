@@ -95,6 +95,15 @@ Execute the following command to launch the muriqui in gazebo without the sensor
 ros2 launch muriqui_gazebo muriqui_gazebo.launch.py use_head_camera:=false use_imu:=false
 ```
 
+### Launch Customized hardware
+
+Execute the following command to launch the custom 4-axis arm model of the Muriqui
+```bash
+# This case is launch real robot
+ros2 launch muriqui_examples demo.launch.py mock:=false arm_4joints:=true
+
+```
+
 ## Examples
 
 Please refer to the [muriqui_examples](muriqui_examples/README.md) for examples.

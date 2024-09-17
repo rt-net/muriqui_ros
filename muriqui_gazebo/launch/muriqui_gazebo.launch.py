@@ -7,7 +7,7 @@ from launch.actions import DeclareLaunchArgument
 from launch.actions import ExecuteProcess
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch_ros.actions import Node
 from launch_ros.actions import SetParameter
 
@@ -25,12 +25,24 @@ def generate_launch_description():
         description='Set false to disable IMU.'
     )
 
+    declare_arm_4joints = DeclareLaunchArgument(
+        'arm_4joints',
+        default_value='false',
+        description=('Set "true" to use arm joint 4DoF model')
+    )
+
     description_loader = RobotDescriptionLoader()
     description_loader.use_gazebo = 'true'
     description_loader.use_gazebo_head_camera = LaunchConfiguration('use_head_camera')
     description_loader.use_gazebo_imu = LaunchConfiguration('use_imu')
+    description_loader.arm_4joints = LaunchConfiguration('arm_4joints')
     description_loader.gz_control_config_package = 'muriqui_control'
-    description_loader.gz_control_config_file_path = 'config/muriqui_controllers.yaml'
+
+    description_loader.gz_control_config_file_path = PythonExpression(
+        ["'config/muriqui_controllers_arm4.yaml' if '",
+         LaunchConfiguration('arm_4joints'),
+         "' == 'true' else 'config/muriqui_controllers.yaml'"])
+
     description = description_loader.load()
 
     display_launch = IncludeLaunchDescription(
@@ -41,6 +53,7 @@ def generate_launch_description():
                 'loaded_description': description,
                 'jsp_gui': 'false',
                 'jsp': 'false',
+                'arm_4joint4': description_loader.arm_4joints,
                 }.items()
         )
 
@@ -121,6 +134,7 @@ def generate_launch_description():
     ld.add_action(SetParameter(name='use_sim_time', value=True))
     ld.add_action(declare_use_head_camera)
     ld.add_action(declare_use_imu)
+    ld.add_action(declare_arm_4joints)
     ld.add_action(display_launch)
     ld.add_action(ign_gazebo)
     ld.add_action(ignition_spawn_entity)
