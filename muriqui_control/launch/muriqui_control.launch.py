@@ -5,20 +5,28 @@ from muriqui_description.robot_description_loader import RobotDescriptionLoader
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.actions import ExecuteProcess
+from launch.actions import OpaqueFunction
+from launch.actions import SetLaunchConfiguration
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
 
 def config_path(file_name: str) -> str:
     return os.path.join(
-        get_package_share_directory('muriqui_hardware'),
+        get_package_share_directory('muriqui_control'),
         'config',
         file_name
     )
 
 
 def generate_launch_description():
+    declare_arm_4joints = DeclareLaunchArgument(
+        'arm_4joints', default_value='false',
+        description=('Set "true" to use arm joint 4DoF model')
+    )
+
     rdl = RobotDescriptionLoader()
+    rdl.arm_4joints = LaunchConfiguration('arm_4joints')
 
     declare_loaded_description = DeclareLaunchArgument(
         'loaded_description',
@@ -27,17 +35,21 @@ def generate_launch_description():
                      It is recommended to use RobotDescriptionLoader() in muriqui_description.'
     )
 
-    muriqui_controllers = os.path.join(
-        get_package_share_directory('muriqui_control'),
-        'config',
-        'muriqui_controllers.yaml'
-        )
+    CONTROLLER_PARAM_CONFIG = "controller_param_config"
+
+    def controller_param_configuration(context):
+        param_path = config_path('muriqui_controllers.yaml')
+        if context.launch_configurations['arm_4joints'] == 'true':
+            param_path = config_path('muriqui_controllers_arm4.yaml')
+
+        return [SetLaunchConfiguration(name=CONTROLLER_PARAM_CONFIG, value=param_path)]
+    set_controller_param_config = OpaqueFunction(function=controller_param_configuration)
 
     controller_manager = Node(
         package='controller_manager',
         executable='ros2_control_node',
         parameters=[{'robot_description': LaunchConfiguration('loaded_description')},
-                    muriqui_controllers],
+                    LaunchConfiguration(CONTROLLER_PARAM_CONFIG)],
         output='screen',
         )
 
@@ -78,7 +90,10 @@ def generate_launch_description():
             )
 
     return LaunchDescription([
+        declare_arm_4joints,
         declare_loaded_description,
+        set_controller_param_config,
+
         controller_manager,
         spawn_joint_state_broadcaster,
         spawn_right_arm_controller,
