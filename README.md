@@ -101,7 +101,11 @@ Execute the following command to launch the custom 4-axis arm model of the Muriq
 ```bash
 # This case is launch real robot
 ros2 launch muriqui_examples demo.launch.py mock:=false arm_4joints:=true
+```
 
+The custom head camera realsense D435i of the Muriqui
+```bash
+ros2 launch muriqui_examples demo.launch.py camera_d435i:=true
 ```
 
 ## Examples
