@@ -15,6 +15,7 @@ from launch.events import matches_action
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
+from launch.substitutions import PythonExpression
 from launch_ros.actions import LifecycleNode
 from launch_ros.actions import Node
 from launch_ros.events import lifecycle
@@ -78,6 +79,10 @@ def generate_launch_description():
         description=('Set "true" to use arm joint 4DoF model')
     )
 
+    declare_camera_d435i = DeclareLaunchArgument(
+        'camera_d435i', default_value='false',
+        description=('Set "true" to use camera d435i')
+    )
     R_ARM_CONFIG = "r_arm_config"
     L_ARM_CONFIG = "l_arm_config"
 
@@ -98,6 +103,7 @@ def generate_launch_description():
     rdl.use_left_leg_mock = LaunchConfiguration('mock')
     rdl.use_neck_mock = LaunchConfiguration('mock')
     rdl.arm_4joints = LaunchConfiguration('arm_4joints')
+    rdl.camera_d435i = LaunchConfiguration('camera_d435i')
 
     rdl.right_arm_port_name = '/dev/muriqui_right_arm'
     rdl.right_leg_port_name = '/dev/muriqui_right_leg'
@@ -136,6 +142,8 @@ def generate_launch_description():
                 'loaded_description': description,
                 'jsp_gui': 'false',
                 'jsp': 'false',
+                'arm_4joints': rdl.arm_4joints,
+                'camera_d435i': rdl.camera_d435i,
                 }.items()
         )
 
@@ -156,7 +164,36 @@ def generate_launch_description():
             {'image_width': 1280},
             {'pixel_format': 'mjpeg2rgb'}
         ],
-        condition=IfCondition(LaunchConfiguration('use_camera'))
+        condition=IfCondition(
+            PythonExpression(
+                ["'", LaunchConfiguration('use_camera'),
+                 "' == 'true' and '", LaunchConfiguration('camera_d435i'),
+                 "' == 'false'"]
+            )
+        )
+    )
+
+    d435i_cam_node = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+            get_package_share_directory('realsense2_camera'),
+            '/launch/rs_launch.py']),
+        launch_arguments={
+            'camera_namespace': '',
+            'camera_name': 'head_camera',
+            'device_type': 'd435i',
+            'rgb_camera.profile': '1280x720x30',
+            'depth_module.profile': '1280x720x30',
+            'pointcloud.enable': 'true',
+            'align_depth.enable': 'true',
+            'publish_tf': 'true',
+        }.items(),
+        condition=IfCondition(
+            PythonExpression(
+                ["'", LaunchConfiguration('use_camera'),
+                 "' == 'true' and '", LaunchConfiguration('camera_d435i'),
+                 "' == 'true'"]
+            )
+        )
     )
 
     imu = LifecycleNode(
@@ -216,12 +253,13 @@ def generate_launch_description():
         declare_use_board,
         declare_board_device,
         declare_arm_4joints,
+        declare_camera_d435i,
         set_right_arm_config,
         set_left_arm_config,
-
         control_node,
         display_launch,
         usb_cam_node,
+        d435i_cam_node,
         imu,
         register_activating_transition,
         emit_configuring_event,
