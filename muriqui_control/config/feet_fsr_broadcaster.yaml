@@ -1,0 +1,26 @@
+controller_manager:
+  ros__parameters:
+    feet_fsr_broadcaster:
+      type: feet_fsr_broadcaster/FeetFSRBroadcaster
+
+feet_fsr_broadcaster:
+  ros__parameters:
+    interface_names:
+      r_front_right: right_fsr_sensor/front_right
+      r_front_left: right_fsr_sensor/front_left
+      r_rear_right: right_fsr_sensor/rear_right
+      r_rear_left: right_fsr_sensor/rear_left
+      l_front_right: left_fsr_sensor/front_right
+      l_front_left: left_fsr_sensor/front_left
+      l_rear_right: left_fsr_sensor/rear_right
+      l_rear_left: left_fsr_sensor/rear_left
+
+    frame_ids:
+      r_front_right: fsr_r_front_right_link
+      r_front_left: fsr_r_front_left_link
+      r_rear_right: fsr_r_rear_right_link
+      r_rear_left: fsr_r_rear_left_link
+      l_front_right: fsr_l_front_right_link
+      l_front_left: fsr_l_front_left_link
+      l_rear_right: fsr_l_rear_right_link
+      l_rear_left: fsr_l_rear_left_link

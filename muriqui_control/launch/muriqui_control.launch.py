@@ -6,7 +6,7 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.actions import ExecuteProcess
 from launch.actions import OpaqueFunction
-from launch.actions import SetLaunchConfiguration
+from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
@@ -35,23 +35,31 @@ def generate_launch_description():
                      It is recommended to use RobotDescriptionLoader() in muriqui_description.'
     )
 
-    CONTROLLER_PARAM_CONFIG = "controller_param_config"
+    declare_feet_fsr = DeclareLaunchArgument(
+        'feet_fsr', default_value='false',
+        description=('Set "true" to use feet FSR sensors.')
+    )
 
-    def controller_param_configuration(context):
-        param_path = config_path('muriqui_controllers.yaml')
+    def gen_controller_manager(context):
+        params = []
+        params.append({'robot_description': LaunchConfiguration('loaded_description')})
+
         if context.launch_configurations['arm_4joints'] == 'true':
-            param_path = config_path('muriqui_controllers_arm4.yaml')
+            params.append(config_path('muriqui_controllers_arm4.yaml'))
+        else:
+            params.append(config_path('muriqui_controllers.yaml'))
 
-        return [SetLaunchConfiguration(name=CONTROLLER_PARAM_CONFIG, value=param_path)]
-    set_controller_param_config = OpaqueFunction(function=controller_param_configuration)
+        if context.launch_configurations['feet_fsr'] == 'true':
+            params.append(config_path('feet_fsr_broadcaster.yaml'))
 
-    controller_manager = Node(
-        package='controller_manager',
-        executable='ros2_control_node',
-        parameters=[{'robot_description': LaunchConfiguration('loaded_description')},
-                    LaunchConfiguration(CONTROLLER_PARAM_CONFIG)],
-        output='screen',
-        )
+        return [Node(
+            package='controller_manager',
+            executable='ros2_control_node',
+            parameters=params,
+            output='screen',
+            )]
+
+    controller_manager = OpaqueFunction(function=gen_controller_manager)
 
     spawn_joint_state_broadcaster = ExecuteProcess(
                 cmd=['ros2 run controller_manager spawner joint_state_broadcaster'],
@@ -89,11 +97,17 @@ def generate_launch_description():
                 output='screen',
             )
 
+    spawn_feet_fsr_broadcaster = ExecuteProcess(
+                cmd=['ros2 run controller_manager spawner feet_fsr_broadcaster'],
+                shell=True,
+                output='screen',
+                condition=IfCondition(LaunchConfiguration('feet_fsr'))
+            )
+
     return LaunchDescription([
         declare_arm_4joints,
         declare_loaded_description,
-        set_controller_param_config,
-
+        declare_feet_fsr,
         controller_manager,
         spawn_joint_state_broadcaster,
         spawn_right_arm_controller,
@@ -101,4 +115,5 @@ def generate_launch_description():
         spawn_left_arm_controller,
         spawn_left_leg_controller,
         spawn_neck_controller,
+        spawn_feet_fsr_broadcaster
     ])
