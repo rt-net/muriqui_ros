@@ -74,6 +74,11 @@ def generate_launch_description():
         description='Set a device file path for Muriqui board.'
     )
 
+    declare_feet_fsr = DeclareLaunchArgument(
+        'feet_fsr', default_value='false',
+        description=('Set "true" to use feet FSR sensors.')
+    )
+
     declare_arm_4joints = DeclareLaunchArgument(
         'arm_4joints', default_value='false',
         description=('Set "true" to use arm joint 4DoF model')
@@ -119,6 +124,8 @@ def generate_launch_description():
 
     rdl.neck_config_path = config_path('neck.yaml')
 
+    rdl.feet_fsr = LaunchConfiguration('feet_fsr')
+
     rdl.baudrate = '4000000'
     rdl.timeout_seconds = '1.0'
 
@@ -130,6 +137,7 @@ def generate_launch_description():
                 '/launch/muriqui_control.launch.py']),
             launch_arguments={
                 'loaded_description': description,
+                'feet_fsr': LaunchConfiguration('feet_fsr'),
                 'arm_4joints': rdl.arm_4joints,
                 }.items()
         )
@@ -142,6 +150,7 @@ def generate_launch_description():
                 'loaded_description': description,
                 'jsp_gui': 'false',
                 'jsp': 'false',
+                'feet_fsr': LaunchConfiguration('feet_fsr'),
                 'arm_4joints': rdl.arm_4joints,
                 'camera_d435i': rdl.camera_d435i,
                 }.items()
@@ -252,6 +261,7 @@ def generate_launch_description():
         declare_imu_device,
         declare_use_board,
         declare_board_device,
+        declare_feet_fsr,
         declare_arm_4joints,
         declare_camera_d435i,
         set_right_arm_config,

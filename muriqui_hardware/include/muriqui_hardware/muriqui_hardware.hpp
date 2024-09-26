@@ -55,6 +55,7 @@ public:
 
 private:
   bool communication_timeout();
+  double fsr_voltage_to_force(double voltage) const;
 
   std::shared_ptr<rt_manipulators_cpp::Hardware> hardware_;
   double timeout_seconds_;
@@ -64,7 +65,15 @@ private:
   std::map<std::string, double> hw_velocity_states_;
   std::map<std::string, double> hw_effort_states_;
 
+  double hw_fsr_front_right_ = 0.0;
+  double hw_fsr_front_left_ = 0.0;
+  double hw_fsr_rear_left_ = 0.0;
+  double hw_fsr_rear_right_ = 0.0;
+
   std::map<std::string, double> current_to_effort_;
+  bool has_fsr_sensor_ = false;
+  std::string fsr_front_joint_name_;
+  std::string fsr_rear_joint_name_;
 
   rclcpp::Clock steady_clock_;
   rclcpp::Time prev_comm_timestamp_;

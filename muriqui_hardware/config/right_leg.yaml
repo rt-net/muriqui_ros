@@ -11,6 +11,8 @@ joint_groups:
       - position
       - velocity
       - current
+      - external_port1
+      - external_port2
     sync_write:
       - position
 

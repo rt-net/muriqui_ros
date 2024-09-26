@@ -97,15 +97,23 @@ ros2 launch muriqui_gazebo muriqui_gazebo.launch.py use_head_camera:=false use_i
 
 ### Launch Customized hardware
 
-Execute the following command to launch the custom 4-axis arm model of the Muriqui
+Execute the following command to launch the custom 4-axis arm model of the Muriqui:
+
 ```bash
 # This case is launch real robot
 ros2 launch muriqui_examples demo.launch.py mock:=false arm_4joints:=true
 ```
 
-The custom head camera realsense D435i of the Muriqui
+The custom head camera realsense D435i of the Muriqui:
+
 ```bash
 ros2 launch muriqui_examples demo.launch.py camera_d435i:=true
+```
+
+Feet FSR sensors:
+
+```bash
+ros2 launch muriqui_examples demo.launch.py feet_fsr:=true
 ```
 
 ## Examples

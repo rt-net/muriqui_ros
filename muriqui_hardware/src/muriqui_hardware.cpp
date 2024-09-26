@@ -89,6 +89,29 @@ CallbackReturn MuriquiHardware::on_init(
     }
   }
 
+  for (const auto & sensor : info_.sensors) {
+    // Load sensor parameters
+    if (sensor.parameters.at("front_joint") != "") {
+      fsr_front_joint_name_ = sensor.parameters.at("front_joint");
+    } else {
+      RCLCPP_ERROR(
+        LOGGER, "Sensor '%s' does not have 'front_joint' parameter.",
+        sensor.name.c_str());
+      return CallbackReturn::ERROR;
+    }
+
+    if (sensor.parameters.at("rear_joint") != "") {
+      fsr_rear_joint_name_ = sensor.parameters.at("rear_joint");
+    } else {
+      RCLCPP_ERROR(
+        LOGGER, "Sensor '%s' does not have 'rear_joint' parameter.",
+        sensor.name.c_str());
+      return CallbackReturn::ERROR;
+    }
+
+    has_fsr_sensor_ = true;
+  }
+
   const auto port_name = info_.hardware_parameters["port_name"];
   const auto baudrate = std::stoi(info_.hardware_parameters["baudrate"]);
   const auto config_file_path = info_.hardware_parameters["manipulator_config_file_path"];
@@ -149,6 +172,17 @@ MuriquiHardware::export_state_interfaces()
     state_interfaces.emplace_back(
       hardware_interface::StateInterface(
         joint.name, hardware_interface::HW_IF_EFFORT, &hw_effort_states_[joint.name]));
+  }
+
+  for (const auto & sensor : info_.sensors) {
+    state_interfaces.emplace_back(
+      hardware_interface::StateInterface(sensor.name, "front_right", &hw_fsr_front_right_));
+    state_interfaces.emplace_back(
+      hardware_interface::StateInterface(sensor.name, "front_left", &hw_fsr_front_left_));
+    state_interfaces.emplace_back(
+      hardware_interface::StateInterface(sensor.name, "rear_left", &hw_fsr_rear_left_));
+    state_interfaces.emplace_back(
+      hardware_interface::StateInterface(sensor.name, "rear_right", &hw_fsr_rear_right_));
   }
 
   return state_interfaces;
@@ -238,6 +272,24 @@ return_type MuriquiHardware::read(
     hw_effort_states_[joint.name] = current * current_to_effort_[joint.name];
   }
 
+  if (has_fsr_sensor_) {
+    double voltage_front_right, voltage_front_left, voltage_rear_left, voltage_rear_right;
+    auto result =
+      hardware_->get_external_port_voltage(fsr_front_joint_name_, 1, voltage_front_right) &&
+      hardware_->get_external_port_voltage(fsr_front_joint_name_, 2, voltage_front_left) &&
+      hardware_->get_external_port_voltage(fsr_rear_joint_name_, 1, voltage_rear_left) &&
+      hardware_->get_external_port_voltage(fsr_rear_joint_name_, 2, voltage_rear_right);
+
+    if (!result) {
+      RCLCPP_ERROR(LOGGER, "Failed to read FSR sensor's data.");
+    } else {
+      hw_fsr_front_right_ = fsr_voltage_to_force(voltage_front_right);
+      hw_fsr_front_left_ = fsr_voltage_to_force(voltage_front_left);
+      hw_fsr_rear_left_ = fsr_voltage_to_force(voltage_rear_left);
+      hw_fsr_rear_right_ = fsr_voltage_to_force(voltage_rear_right);
+    }
+  }
+
   prev_comm_timestamp_ = steady_clock_.now();
   return return_type::OK;
 }
@@ -276,6 +328,23 @@ bool MuriquiHardware::communication_timeout()
   } else {
     return false;
   }
+}
+
+double MuriquiHardware::fsr_voltage_to_force(double voltage) const
+{
+  constexpr double R_LOWER = 1.5;  // kOhm
+  constexpr double VCC = 3.3;  // V
+  constexpr double FSR_EXPONENT = -1.0 / 0.699;
+  constexpr double FSR_COEFFICIENT = 1.0 / 153.18;
+  constexpr double WEIGHT_TO_FORCE = 1.0E-03 * 9.81;  // kgf to N
+
+  if (voltage == 0.0) {
+    return 0.0;
+  }
+
+  double resistance = R_LOWER * (VCC / voltage - 1.0);
+  double weight = std::pow(FSR_COEFFICIENT * resistance, FSR_EXPONENT);
+  return weight * WEIGHT_TO_FORCE;
 }
 
 }  // namespace muriqui_hardware
