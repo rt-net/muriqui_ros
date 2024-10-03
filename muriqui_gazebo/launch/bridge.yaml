@@ -20,21 +20,3 @@
   ros_type_name: "sensor_msgs/msg/CameraInfo"
   direction: GZ_TO_ROS
 
-- gz_topic_name: "head_camera/camera_info"
-  ros_topic_name: "head_camera/aligned_depth_to_color/camera_info"
-  gz_type_name: "gz.msgs.CameraInfo"
-  ros_type_name: "sensor_msgs/msg/CameraInfo"
-  direction: GZ_TO_ROS
-
-- gz_topic_name: "head_camera/depth_image"
-  ros_topic_name: "head_camera/aligned_depth_to_color/image_raw"
-  gz_type_name: "gz.msgs.Image"
-  ros_type_name: "sensor_msgs/msg/Image"
-  direction: GZ_TO_ROS
-
-- gz_topic_name: "head_camera/points"
-  ros_topic_name: "head_camera/depth/color/points"
-  gz_type_name: "gz.msgs.PointCloudPacked"
-  ros_type_name: "sensor_msgs/msg/PointCloud2"
-  direction: GZ_TO_ROS
-
