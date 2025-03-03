@@ -110,6 +110,12 @@ The custom head camera realsense D435i of the Muriqui:
 ros2 launch muriqui_examples demo.launch.py camera_d435i:=true
 ```
 
+The custom head camera realsense D405 of the Muriqui:
+
+```bash
+ros2 launch muriqui_examples demo.launch.py camera_d405:=true
+```
+
 Feet FSR sensors:
 
 ```bash
