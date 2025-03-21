@@ -48,6 +48,7 @@ Other parameters:
 | neck   | neck_joint2 | 0.0      | 0.2   | -0.2  | {goal_position} |
 
 - Check [muriqui_examples/config/joint_goals_arm_4joints.csv](./config/joint_goals_arm_4joints.csv) for the 4-axis arm customization model.
+- Check [muriqui_examples/config/joint_goals_arm_4joints_with_hand.csv](./config/joint_goals_arm_4joints_with_hand.csv) for the 4-axis arm and hand customization model.
 
 ### Images
 

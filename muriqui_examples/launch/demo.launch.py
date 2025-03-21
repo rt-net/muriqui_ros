@@ -84,6 +84,11 @@ def generate_launch_description():
         description=('Set "true" to use arm joint 4DoF model')
     )
 
+    declare_with_hand = DeclareLaunchArgument(
+        'with_hand', default_value='false',
+        description=('Set "true" to use')
+    )
+
     declare_camera_default = DeclareLaunchArgument(
         'camera_default', default_value='true',
         description=('Set "true" to use camera default model')
@@ -106,6 +111,8 @@ def generate_launch_description():
         param_path = config_path(prefix + '_arm.yaml')
         if context.launch_configurations['arm_4joints'] == 'true':
             param_path = config_path(prefix + '_arm4.yaml')
+        if context.launch_configurations['with_hand'] == 'true':
+            param_path = config_path(prefix + '_arm4_with_hand.yaml')
 
         return [SetLaunchConfiguration(name=config_name, value=param_path)]
 
@@ -119,6 +126,7 @@ def generate_launch_description():
     rdl.use_left_leg_mock = LaunchConfiguration('mock')
     rdl.use_neck_mock = LaunchConfiguration('mock')
     rdl.arm_4joints = LaunchConfiguration('arm_4joints')
+    rdl.with_hand = LaunchConfiguration('with_hand')
     rdl.camera_default = LaunchConfiguration('camera_default')
     rdl.camera_d435i = LaunchConfiguration('camera_d435i')
     rdl.camera_d405 = LaunchConfiguration('camera_d405')
@@ -152,6 +160,7 @@ def generate_launch_description():
                 'loaded_description': description,
                 'feet_fsr': LaunchConfiguration('feet_fsr'),
                 'arm_4joints': rdl.arm_4joints,
+                'with_hand': rdl.with_hand,
                 }.items()
         )
 
@@ -165,6 +174,7 @@ def generate_launch_description():
                 'jsp': 'false',
                 'feet_fsr': LaunchConfiguration('feet_fsr'),
                 'arm_4joints': rdl.arm_4joints,
+                'with_hand': rdl.with_hand,
                 'camera_default': rdl.camera_default,
                 'camera_d435i': rdl.camera_d435i,
                 'camera_d405': rdl.camera_d405,
@@ -301,6 +311,7 @@ def generate_launch_description():
         declare_board_device,
         declare_feet_fsr,
         declare_arm_4joints,
+        declare_with_hand,
         declare_camera_default,
         declare_camera_d435i,
         declare_camera_d405,

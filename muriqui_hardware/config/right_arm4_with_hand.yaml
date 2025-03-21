@@ -1,0 +1,20 @@
+joint_groups:
+  group:
+    joints:
+      - r_arm_joint1
+      - r_arm_joint2
+      - r_arm_joint3
+      - r_arm_joint_add4
+      - r_arm_joint_hand
+    sync_read:
+      - position
+      - velocity
+      - current
+    sync_write:
+      - position
+
+r_arm_joint1: { id: 2, dynamixel: "XM430", operating_mode: 3, pos_p: 800, pos_i: 0, pos_d: 0 }
+r_arm_joint2: { id: 3, dynamixel: "XM430", operating_mode: 3, pos_p: 800, pos_i: 0, pos_d: 0 }
+r_arm_joint3: { id: 4, dynamixel: "XM430", operating_mode: 3, pos_p: 800, pos_i: 0, pos_d: 0 }
+r_arm_joint_add4: { id: 5, dynamixel: "XM430", operating_mode: 3, pos_p: 800, pos_i: 0, pos_d: 0 }
+r_arm_joint_hand: { id: 6, dynamixel: "XC330", operating_mode: 3, pos_p: 800, pos_i: 0, pos_d: 0 }

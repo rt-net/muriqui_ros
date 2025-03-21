@@ -25,8 +25,14 @@ def generate_launch_description():
         description=('Set "true" to use arm joint 4DoF model')
     )
 
+    declare_with_hand = DeclareLaunchArgument(
+        'with_hand', default_value='false',
+        description=('Set "true" to use with hand model')
+    )
+
     rdl = RobotDescriptionLoader()
     rdl.arm_4joints = LaunchConfiguration('arm_4joints')
+    rdl.with_hand = LaunchConfiguration('hand_model')
 
     declare_loaded_description = DeclareLaunchArgument(
         'loaded_description',
@@ -46,6 +52,8 @@ def generate_launch_description():
 
         if context.launch_configurations['arm_4joints'] == 'true':
             params.append(config_path('muriqui_controllers_arm4.yaml'))
+        elif context.launch_configurations['with_hand'] == 'true':
+            params.append(config_path('muriqui_controllers_arm4_with_hand.yaml'))
         else:
             params.append(config_path('muriqui_controllers.yaml'))
 
@@ -106,6 +114,7 @@ def generate_launch_description():
 
     return LaunchDescription([
         declare_arm_4joints,
+        declare_with_hand,
         declare_loaded_description,
         declare_feet_fsr,
         controller_manager,

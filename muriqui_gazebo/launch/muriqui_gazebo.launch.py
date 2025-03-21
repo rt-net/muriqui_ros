@@ -31,16 +31,25 @@ def generate_launch_description():
         description=('Set "true" to use arm joint 4DoF model')
     )
 
+    declare_with_hand = DeclareLaunchArgument(
+        'with_hand',
+        default_value='false',
+        description=('Set "true" to use with hand model')
+    )
+
     description_loader = RobotDescriptionLoader()
     description_loader.use_gazebo = 'true'
     description_loader.use_gazebo_head_camera = LaunchConfiguration('use_head_camera')
     description_loader.use_gazebo_imu = LaunchConfiguration('use_imu')
     description_loader.arm_4joints = LaunchConfiguration('arm_4joints')
+    description_loader.with_hand = LaunchConfiguration('with_hand')
     description_loader.gz_control_config_package = 'muriqui_control'
 
     description_loader.gz_control_config_file_path = PythonExpression(
         ["'config/muriqui_controllers_arm4.yaml' if '",
          LaunchConfiguration('arm_4joints'),
+         "' == 'true' else 'config/muriqui_controllers_arm4_with_hand.yaml' if '",
+         LaunchConfiguration('with_hand'),
          "' == 'true' else 'config/muriqui_controllers.yaml'"])
 
     description = description_loader.load()
@@ -54,6 +63,7 @@ def generate_launch_description():
                 'jsp_gui': 'false',
                 'jsp': 'false',
                 'arm_4joint4': description_loader.arm_4joints,
+                'with_hand': description_loader.with_hand,
                 }.items()
         )
 
@@ -135,6 +145,7 @@ def generate_launch_description():
     ld.add_action(declare_use_head_camera)
     ld.add_action(declare_use_imu)
     ld.add_action(declare_arm_4joints)
+    ld.add_action(declare_with_hand)
     ld.add_action(display_launch)
     ld.add_action(ign_gazebo)
     ld.add_action(ignition_spawn_entity)
