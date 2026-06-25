@@ -20,8 +20,3 @@ rosdep install -r -y -i --from-paths .
 cd ~/ros2_ws
 colcon build --symlink-install
 ```
-
-## License
-
-This softwware is licensed under the RT Cor. Software License Version 1.0.
-See the [LICENSE](LICENSE) file for details.

@@ -135,5 +135,7 @@ Please refer to the [muriqui_examples](muriqui_examples/README.md) for examples.
 
 ## License
 
-This softwware is licensed under the RT Cor. Software License Version 1.0.
-See the [LICENSE](LICENSE) file for details.
+(C) 2018 RT Corporation \<support@rt-net.jp\>
+
+This repository is licensed under the Apache License, Version 2.0, see [LICENSE](./LICENSE).
+Unless attributed otherwise, everything in this repository is under the Apache License, Version 2.0.

@@ -67,8 +67,3 @@ xacro muriqui.urdf.xacro -o muriqui.urdf arm_4joints:=true
 # When using the 4-axis arm and hand, update the urdf file with the following command
 xacro muriqui.urdf.xacro -o muriqui.urdf with_hand:=true
 ```
-
-## License
-
-This softwware is licensed under the RT Cor. Software License Version 1.0.
-See the [LICENSE](LICENSE) file for details.
