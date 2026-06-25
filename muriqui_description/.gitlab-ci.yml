@@ -1,0 +1,34 @@
+# --- start industrial_ci template ---
+image: docker:git
+
+variables:
+  ADDITIONAL_DEBS: git-core
+  AFTER_INIT: git config --global url."http://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_HOST}/".insteadOf "${CI_SERVER_URL}/"
+
+services:
+  - docker:20.10.16-dind
+
+before_script:
+  - apk add --update bash coreutils tar
+  - git clone --quiet --depth 1 https://github.com/ros-industrial/industrial_ci .industrial_ci -b master
+# --- end industrial_ci template ---
+
+.ci_common:
+  variables:
+    # テストがワークスペース内のパッケージに依存しているため、setup.bashを読み込む
+    # Ref: https://github.com/ros-industrial/industrial_ci/issues/585
+    BEFORE_RUN_TARGET_TEST_EMBED: "ici_with_unset_variables source /root/target_ws/install/setup.bash"
+
+  script:
+    - .industrial_ci/gitlab.sh
+  rules:
+    # - changes:
+    #   - "*.md"
+    #   when: never
+    - when: always
+
+humble:
+  variables:
+    ROS_DISTRO: "humble"
+
+  extends: .ci_common

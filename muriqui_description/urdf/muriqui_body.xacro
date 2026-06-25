@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:macro name="muriqui_body">
+
+    <link name="${NAME_LINK_BODY}">
+      <visual>
+        <geometry>
+          <mesh filename="${VISUAL_STL_FILE_PATH}/${NAME_LINK_BODY}.stl" scale="1.0 1.0 1.0"/>
+        </geometry>
+        <material name="${COLOR_LINK_BODY}"/>
+      </visual>
+      <xacro:generate_collision_tag>
+        <simple_origin>
+          <origin rpy="0 0 0" xyz="-0.01 0.0 0.08"/>
+        </simple_origin>
+        <simple_geometry>
+          <box size="0.17 0.14 0.16"/>
+        </simple_geometry>
+        <normal_origin>
+          <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+        </normal_origin>
+        <normal_geometry>
+          <mesh filename="${COLLISION_STL_FILE_PATH}/${NAME_LINK_BODY}.stl" scale="1.0 1.0 1.0"/>
+        </normal_geometry>
+      </xacro:generate_collision_tag>
+      <inertial>
+        <mass value="1.895742"/>
+        <origin xyz="-10.926e-03 0.678e-03 75.238e-03" rpy="0 0 0"/>
+        <inertia ixx="7324756.156e-09" ixy="9363.792e-09" iyy="6608323.26e-09" ixz="-185268.824e-09" iyz="11642.157e-09" izz="5833088.37e-09" />
+      </inertial>
+    </link>
+
+  </xacro:macro>
+
+</robot>

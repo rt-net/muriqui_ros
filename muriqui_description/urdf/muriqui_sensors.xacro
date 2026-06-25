@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:macro name="muriqui_sensors">
+
+    <joint name="${NAME_JOINT_IMU}" type="fixed">
+      <parent link="${NAME_LINK_BODY}" />
+      <child link="${NAME_LINK_IMU}" />
+      <origin xyz="0.0 0.0 0.0975" rpy="0 0 0"/>
+    </joint>
+
+    <link name="${NAME_LINK_IMU}">
+      <visual>
+        <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+        <geometry>
+          <box size= "0.01 0.01 0.01" />
+        </geometry>
+        <material name="${COLOR_LINK_SENSORS}"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+        <geometry>
+          <box size= "1.0e-06 1.0e-06 1.0e-06" />
+        </geometry>
+      </collision>
+
+      <inertial>
+        <mass value="1.0e-09"/>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+        <inertia ixx="1.0e-12" ixy="0.0" iyy="1.0e-12" ixz="0.0" iyz="0.0" izz="1.0e-12" />
+      </inertial>
+    </link>
+
+    <xacro:if value="${CAMERA_DEFAULT}">
+      <joint name="${NAME_HEAD_CAMERA_PREFIX}_joint" type="fixed">
+        <parent link="${NAME_LINK_HEAD}" />
+        <child link="${NAME_HEAD_CAMERA_PREFIX}_color_optical_frame" />
+        <origin xyz="0.0494 0.0 0.0425" rpy="${radians(-90)} 0 ${radians(-90)}"/>
+      </joint>
+
+      <link name="${NAME_HEAD_CAMERA_PREFIX}_color_optical_frame">
+        <visual>
+          <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+          <geometry>
+            <box size= "0.01 0.01 0.01" />
+          </geometry>
+          <material name="${COLOR_LINK_SENSORS}"/>
+        </visual>
+
+        <collision>
+          <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+          <geometry>
+            <box size= "1.0e-06 1.0e-06 1.0e-06" />
+          </geometry>
+        </collision>
+
+        <inertial>
+          <mass value="1.0e-09"/>
+          <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+          <inertia ixx="1.0e-12" ixy="0.0" iyy="1.0e-12" ixz="0.0" iyz="0.0" izz="1.0e-12" />
+        </inertial>
+
+      </link>
+    </xacro:if>
+
+    <xacro:if value="${CAMERA_D435I}">
+      <xacro:include filename="$(find muriqui_description)/urdf/_d435.urdf.xacro"/>
+      <xacro:include filename="$(find muriqui_description)/urdf/_d435i_imu_modules.urdf.xacro"/>
+      <xacro:arg name="use_nominal_extrinsics" default="false" />>
+      <xacro:sensor_d435 parent="${NAME_LINK_HEAD}" name="${NAME_HEAD_CAMERA_PREFIX}" use_nominal_extrinsics="$(arg use_nominal_extrinsics)">
+        <origin xyz="0.03565 0 0.03" rpy="0 0 0"/>
+      </xacro:sensor_d435>
+      <xacro:d435i_imu_modules name="${NAME_HEAD_CAMERA_PREFIX}" use_nominal_extrinsics="$(arg use_nominal_extrinsics)"/>
+    </xacro:if>
+
+    <xacro:if value="${CAMERA_D405}">
+      <xacro:include filename="$(find muriqui_description)/urdf/_d405.urdf.xacro"/>
+      <xacro:arg name="use_nominal_extrinsics" default="false" />>
+      <xacro:sensor_d405 parent="${NAME_LINK_HEAD}" name="${NAME_HEAD_CAMERA_PREFIX}" use_nominal_extrinsics="$(arg use_nominal_extrinsics)">
+        <origin xyz="0.03385 0 0.0215" rpy="0 0 0"/>
+      </xacro:sensor_d405>
+    </xacro:if>
+
+  </xacro:macro>
+
+</robot>

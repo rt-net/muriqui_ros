@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:macro name="generate_collision_tag" params="**simple_origin **simple_geometry **normal_origin **normal_geometry">
+    <collision>
+      <xacro:if value="${USE_SIMPLE_COLLISION_MODEL}">
+        <xacro:insert_block name="simple_origin" />
+        <geometry>
+          <xacro:insert_block name="simple_geometry" />
+        </geometry>
+      </xacro:if>
+
+      <xacro:unless value="${USE_SIMPLE_COLLISION_MODEL}">
+        <xacro:insert_block name="normal_origin" />
+        <geometry>
+          <xacro:insert_block name="normal_geometry" />
+        </geometry>
+      </xacro:unless>
+    </collision>
+  </xacro:macro>
+</robot>

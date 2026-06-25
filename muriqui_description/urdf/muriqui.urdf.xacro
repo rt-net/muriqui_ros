@@ -1,0 +1,360 @@
+<?xml version="1.0"?>
+
+<robot name="muriqui" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:property name="ARM_DEFAULT" default="true"/>
+  <xacro:arg name="arm_4joints" default="false" />
+  <xacro:property name="ARM_4JOINTS" default="$(arg arm_4joints)"/>
+  <xacro:arg name="with_hand" default="false" />
+  <xacro:property name="WITH_HAND" default="$(arg with_hand)"/>
+
+  <xacro:if value="${ARM_4JOINTS}">
+    <xacro:property name="ARM_DEFAULT" value="false" />
+  </xacro:if>
+  <xacro:if value="${WITH_HAND}">
+    <xacro:property name="ARM_DEFAULT" value="false" />
+  </xacro:if>
+
+  <xacro:include filename="$(find muriqui_description)/urdf/muriqui_body.xacro"/>
+  <xacro:include filename="$(find muriqui_description)/urdf/muriqui_head.xacro"/>
+  <xacro:include filename="$(find muriqui_description)/urdf/muriqui_right_leg.xacro"/>
+  <xacro:include filename="$(find muriqui_description)/urdf/muriqui_left_leg.xacro"/>
+  <xacro:include filename="$(find muriqui_description)/urdf/muriqui_right_leg_fsr.xacro"/>
+  <xacro:include filename="$(find muriqui_description)/urdf/muriqui_left_leg_fsr.xacro"/>
+  <xacro:if value="${ARM_DEFAULT}" >
+   <xacro:include filename="$(find muriqui_description)/urdf/muriqui_right_arm.xacro"/>
+   <xacro:include filename="$(find muriqui_description)/urdf/muriqui_left_arm.xacro"/>
+  </xacro:if>
+  <xacro:if value="${ARM_4JOINTS}" >
+   <xacro:include filename="$(find muriqui_description)/urdf/muriqui_right_arm4.xacro"/>
+   <xacro:include filename="$(find muriqui_description)/urdf/muriqui_left_arm4.xacro"/>
+  </xacro:if>
+  <xacro:if value="${WITH_HAND}" >
+   <xacro:include filename="$(find muriqui_description)/urdf/muriqui_right_arm4_with_hand.xacro"/>
+   <xacro:include filename="$(find muriqui_description)/urdf/muriqui_left_arm4_with_hand.xacro"/>
+  </xacro:if>
+
+  <xacro:include filename="$(find muriqui_description)/urdf/ros2_control/muriqui_right_arm.ros2_control.xacro"/>
+  <xacro:include filename="$(find muriqui_description)/urdf/ros2_control/muriqui_right_leg.ros2_control.xacro"/>
+  <xacro:include filename="$(find muriqui_description)/urdf/ros2_control/muriqui_left_arm.ros2_control.xacro"/>
+  <xacro:include filename="$(find muriqui_description)/urdf/ros2_control/muriqui_left_leg.ros2_control.xacro"/>
+  <xacro:include filename="$(find muriqui_description)/urdf/ros2_control/muriqui_neck.ros2_control.xacro"/>
+  <xacro:include filename="$(find muriqui_description)/urdf/ros2_control/muriqui.gazebo_ros2_control.xacro"/>
+
+  <xacro:include filename="$(find muriqui_description)/urdf/muriqui_sensors.xacro"/>
+  <xacro:include filename="$(find muriqui_description)/urdf/muriqui_gazebo_sensors.xacro"/>
+
+  <xacro:include filename="$(find muriqui_description)/urdf/dynamixel_limits.xacro"/>
+  <xacro:include filename="$(find muriqui_description)/urdf/fsr_sensor_body.xacro"/>
+  <xacro:include filename="$(find muriqui_description)/urdf/generate_collision_tag.xacro"/>
+
+  <xacro:arg name="use_right_arm_mock" default="false" />
+  <xacro:arg name="right_arm_port_name" default="/dev/muriqui_right_arm" />
+  <xacro:arg name="right_arm_config_path" default="" />
+  <xacro:arg name="use_right_leg_mock" default="false" />
+  <xacro:arg name="right_leg_port_name" default="/dev/muriqui_right_leg" />
+  <xacro:arg name="right_leg_config_path" default="" />
+
+  <xacro:arg name="use_left_arm_mock" default="false" />
+  <xacro:arg name="left_arm_port_name" default="/dev/muriqui_left_arm" />
+  <xacro:arg name="left_arm_config_path" default="" />
+  <xacro:arg name="use_left_leg_mock" default="false" />
+  <xacro:arg name="left_leg_port_name" default="/dev/muriqui_left_leg" />
+  <xacro:arg name="left_leg_config_path" default="" />
+
+  <xacro:arg name="use_neck_mock" default="false" />
+  <xacro:arg name="neck_port_name" default="/dev/muriqui_neck" />
+  <xacro:arg name="neck_config_path" default="" />
+
+  <xacro:arg name="use_simple_collision_model" default="true" />
+  <xacro:arg name="camera_default" default="true" />
+  <xacro:arg name="camera_d435i" default="false" />
+  <xacro:arg name="camera_d405" default="false" />
+
+  <xacro:arg name="feet_fsr" default="false" />
+
+  <xacro:property name="USE_RIGHT_ARM_MOCK" value="$(arg use_right_arm_mock)"/>
+  <xacro:property name="RIGHT_ARM_PORT_NAME" value="$(arg right_arm_port_name)"/>
+  <xacro:property name="RIGHT_ARM_CONFIG_PATH" value="$(arg right_arm_config_path)"/>
+  <xacro:property name="USE_RIGHT_LEG_MOCK" value="$(arg use_right_leg_mock)"/>
+  <xacro:property name="RIGHT_LEG_PORT_NAME" value="$(arg right_leg_port_name)"/>
+  <xacro:property name="RIGHT_LEG_CONFIG_PATH" value="$(arg right_leg_config_path)"/>
+
+  <xacro:property name="USE_LEFT_ARM_MOCK" value="$(arg use_left_arm_mock)"/>
+  <xacro:property name="LEFT_ARM_PORT_NAME" value="$(arg left_arm_port_name)"/>
+  <xacro:property name="LEFT_ARM_CONFIG_PATH" value="$(arg left_arm_config_path)"/>
+  <xacro:property name="USE_LEFT_LEG_MOCK" value="$(arg use_left_leg_mock)"/>
+  <xacro:property name="LEFT_LEG_PORT_NAME" value="$(arg left_leg_port_name)"/>
+  <xacro:property name="LEFT_LEG_CONFIG_PATH" value="$(arg left_leg_config_path)"/>
+
+  <xacro:property name="USE_NECK_MOCK" value="$(arg use_neck_mock)"/>
+  <xacro:property name="NECK_PORT_NAME" value="$(arg neck_port_name)"/>
+  <xacro:property name="NECK_CONFIG_PATH" value="$(arg neck_config_path)"/>
+
+  <xacro:property name="USE_SIMPLE_COLLISION_MODEL" value="$(arg use_simple_collision_model)"/>
+
+  <xacro:property name="CAMERA_DEFAULT" value="$(arg camera_default)"/>
+  <xacro:property name="CAMERA_D435I" value="$(arg camera_d435i)"/>
+  <xacro:property name="CAMERA_D405" value="$(arg camera_d405)"/>
+  <xacro:if value="${CAMERA_D435I}">
+    <xacro:property name="CAMERA_DEFAULT" value="false" />
+  </xacro:if>
+  <xacro:if value="${CAMERA_D405}">
+    <xacro:property name="CAMERA_DEFAULT" value="false" />
+  </xacro:if>
+
+  <xacro:property name="FEET_FSR" value="$(arg feet_fsr)"/>
+
+  <xacro:arg name="baudrate" default="3000000" />
+  <xacro:arg name="timeout_seconds" default="1.0" />
+  <xacro:property name="BAUDRATE" value="$(arg baudrate)"/>
+  <xacro:property name="TIMEOUT_SECONDS" value="$(arg timeout_seconds)"/>
+
+  <xacro:arg name="use_gazebo" default="false" />
+  <xacro:arg name="use_gazebo_head_camera" default="true" />
+  <xacro:arg name="use_gazebo_imu" default="true" />
+  <xacro:arg name="gz_control_config_package" default="" />
+  <xacro:arg name="gz_control_config_file_path" default="" />
+  <xacro:property name="USE_GAZEBO_HEAD_CAMERA" value="$(arg use_gazebo_head_camera)"/>
+  <xacro:property name="USE_GAZEBO_IMU" value="$(arg use_gazebo_imu)"/>
+  <xacro:property name="GZ_CONTROL_CONFIG_PACKAGE" value="$(arg gz_control_config_package)"/>
+  <xacro:property name="GZ_CONTROL_CONFIG_FILE_PATH" value="$(arg gz_control_config_file_path)"/>
+
+
+  <material name="white">
+    <color rgba="0.9 0.9 0.9 1.0"/>
+  </material>
+
+  <material name="black">
+    <color rgba="0.1 0.1 0.1 1"/>
+  </material>
+
+  <material name="red">
+    <color rgba="0.8984375 0.0 0.0703125 1"/>
+  </material>
+
+  <material name="light_red">
+    <color rgba="0.9 0.5 0.5 1"/>
+  </material>
+
+  <material name="green">
+    <color rgba="0.0 0.9 0.0 1"/>
+  </material>
+
+  <material name="light_green">
+    <color rgba="0.5 0.9 0.5 1"/>
+  </material>
+
+  <material name="blue">
+    <color rgba="0.0 0.0 0.9 1"/>
+  </material>
+
+  <material name="light_blue">
+    <color rgba="0.5 0.5 0.9 1"/>
+  </material>
+
+  <material name="yellow">
+    <color rgba="1.0 0.9 0.0 1"/>
+  </material>
+
+  <material name="cyan">
+    <color rgba="0.0 0.5 0.9 1"/>
+  </material>
+
+  <material name="purple">
+    <color rgba="0.9 0.0 0.9 1"/>
+  </material>
+
+  <xacro:property name="M_PI" value="3.14159"/>
+
+  <xacro:property name="VISUAL_STL_FILE_PATH" value="package://muriqui_description/meshes/visual"/>
+  <xacro:property name="COLLISION_STL_FILE_PATH" value="package://muriqui_description/meshes/collision"/>
+
+  <xacro:property name="NAME_LINK_BODY" value="Body"/>
+
+  <xacro:property name="NAME_LINK_NECK_1" value="Neck1"/>
+  <xacro:property name="NAME_LINK_HEAD" value="Head"/>
+
+  <xacro:property name="NAME_LINK_ARM_R_1" value="Arm_R_Link1"/>
+  <xacro:property name="NAME_LINK_ARM_R_2" value="Arm_R_Link2"/>
+  <xacro:property name="NAME_LINK_ARM_R_2_UPPER" value="Arm_R_Link2_Upper"/>
+  <xacro:property name="NAME_LINK_ARM_R_2_LOWER" value="Arm_R_Link2_Lower"/>
+  <xacro:property name="NAME_LINK_ARM_R_3" value="Arm_R_Link3"/>
+  <xacro:property name="NAME_LINK_ARM_R_3_HAND" value="Arm_R_Link3_Hand"/>
+  <xacro:property name="NAME_LINK_ARM_R_FINGER" value="Arm_R_Link_Finger"/>
+
+  <xacro:property name="NAME_LINK_ARM_L_1" value="Arm_L_Link1"/>
+  <xacro:property name="NAME_LINK_ARM_L_2" value="Arm_L_Link2"/>
+  <xacro:property name="NAME_LINK_ARM_L_2_UPPER" value="Arm_L_Link2_Upper"/>
+  <xacro:property name="NAME_LINK_ARM_L_2_LOWER" value="Arm_L_Link2_Lower"/>
+  <xacro:property name="NAME_LINK_ARM_L_3" value="Arm_L_Link3"/>
+  <xacro:property name="NAME_LINK_ARM_L_3_HAND" value="Arm_L_Link3_Hand"/>
+  <xacro:property name="NAME_LINK_ARM_L_FINGER" value="Arm_L_Link_Finger"/>
+
+  <xacro:property name="NAME_LINK_LEG_R_1" value="Leg_R_Link1"/>
+  <xacro:property name="NAME_LINK_LEG_R_2" value="Leg_R_Link2"/>
+  <xacro:property name="NAME_LINK_LEG_R_3" value="Leg_R_Link3"/>
+  <xacro:property name="NAME_LINK_LEG_R_4" value="Leg_R_Link4"/>
+  <xacro:property name="NAME_LINK_LEG_R_5" value="Leg_R_Link5"/>
+  <xacro:property name="NAME_LINK_LEG_R_6" value="Leg_R_Link6"/>
+
+  <xacro:property name="NAME_LINK_LEG_L_1" value="Leg_L_Link1"/>
+  <xacro:property name="NAME_LINK_LEG_L_2" value="Leg_L_Link2"/>
+  <xacro:property name="NAME_LINK_LEG_L_3" value="Leg_L_Link3"/>
+  <xacro:property name="NAME_LINK_LEG_L_4" value="Leg_L_Link4"/>
+  <xacro:property name="NAME_LINK_LEG_L_5" value="Leg_L_Link5"/>
+  <xacro:property name="NAME_LINK_LEG_L_6" value="Leg_L_Link6"/>
+
+  <xacro:property name="NAME_LINK_IMU" value="imu_link"/>
+
+  <xacro:property name="NAME_LINK_FSR_R_FR" value="fsr_r_front_right_link"/>
+  <xacro:property name="NAME_LINK_FSR_R_FL" value="fsr_r_front_left_link"/>
+  <xacro:property name="NAME_LINK_FSR_R_RR" value="fsr_r_rear_right_link"/>
+  <xacro:property name="NAME_LINK_FSR_R_RL" value="fsr_r_rear_left_link"/>
+  <xacro:property name="NAME_LINK_FSR_L_FR" value="fsr_l_front_right_link"/>
+  <xacro:property name="NAME_LINK_FSR_L_FL" value="fsr_l_front_left_link"/>
+  <xacro:property name="NAME_LINK_FSR_L_RR" value="fsr_l_rear_right_link"/>
+  <xacro:property name="NAME_LINK_FSR_L_RL" value="fsr_l_rear_left_link"/>
+
+  <xacro:property name="NAME_JOINT_NECK_1" value="neck_joint1"/>
+  <xacro:property name="NAME_JOINT_NECK_2" value="neck_joint2"/>
+
+  <xacro:property name="NAME_JOINT_ARM_R_1" value="r_arm_joint1"/>
+  <xacro:property name="NAME_JOINT_ARM_R_2" value="r_arm_joint2"/>
+  <xacro:property name="NAME_JOINT_ARM_R_3" value="r_arm_joint3"/>
+  <xacro:property name="NAME_JOINT_ARM_R_ADD4" value="r_arm_joint_add4"/>
+  <xacro:property name="NAME_JOINT_ARM_R_HAND" value="r_arm_joint_hand"/>
+
+  <xacro:property name="NAME_JOINT_ARM_L_1" value="l_arm_joint1"/>
+  <xacro:property name="NAME_JOINT_ARM_L_2" value="l_arm_joint2"/>
+  <xacro:property name="NAME_JOINT_ARM_L_3" value="l_arm_joint3"/>
+  <xacro:property name="NAME_JOINT_ARM_L_ADD4" value="l_arm_joint_add4"/>
+  <xacro:property name="NAME_JOINT_ARM_L_HAND" value="l_arm_joint_hand"/>
+
+  <xacro:property name="NAME_JOINT_LEG_R_1" value="r_leg_joint1"/>
+  <xacro:property name="NAME_JOINT_LEG_R_2" value="r_leg_joint2"/>
+  <xacro:property name="NAME_JOINT_LEG_R_3" value="r_leg_joint3"/>
+  <xacro:property name="NAME_JOINT_LEG_R_4" value="r_leg_joint4"/>
+  <xacro:property name="NAME_JOINT_LEG_R_5" value="r_leg_joint5"/>
+  <xacro:property name="NAME_JOINT_LEG_R_6" value="r_leg_joint6"/>
+
+  <xacro:property name="NAME_JOINT_LEG_L_1" value="l_leg_joint1"/>
+  <xacro:property name="NAME_JOINT_LEG_L_2" value="l_leg_joint2"/>
+  <xacro:property name="NAME_JOINT_LEG_L_3" value="l_leg_joint3"/>
+  <xacro:property name="NAME_JOINT_LEG_L_4" value="l_leg_joint4"/>
+  <xacro:property name="NAME_JOINT_LEG_L_5" value="l_leg_joint5"/>
+  <xacro:property name="NAME_JOINT_LEG_L_6" value="l_leg_joint6"/>
+
+  <xacro:property name="NAME_JOINT_IMU" value="imu_joint"/>
+
+  <xacro:property name="NAME_JOINT_FSR_R_FR" value="fsr_r_front_right_joint"/>
+  <xacro:property name="NAME_JOINT_FSR_R_FL" value="fsr_r_front_left_joint"/>
+  <xacro:property name="NAME_JOINT_FSR_R_RR" value="fsr_r_rear_right_joint"/>
+  <xacro:property name="NAME_JOINT_FSR_R_RL" value="fsr_r_rear_left_joint"/>
+  <xacro:property name="NAME_JOINT_FSR_L_FR" value="fsr_l_front_right_joint"/>
+  <xacro:property name="NAME_JOINT_FSR_L_FL" value="fsr_l_front_left_joint"/>
+  <xacro:property name="NAME_JOINT_FSR_L_RR" value="fsr_l_rear_right_joint"/>
+  <xacro:property name="NAME_JOINT_FSR_L_RL" value="fsr_l_rear_left_joint"/>
+
+  <xacro:property name="NAME_HEAD_CAMERA_PREFIX" value="head_camera"/>
+
+  <xacro:property name="EFFORT_LIMIT" value="4.0"/>
+  <xacro:property name="VELOCITY_LIMIT" value="5.969211435"/>
+
+  <xacro:property name="JOINT_NECK_1_LOWER_LIMIT" value="${radians(-160)}"/>
+  <xacro:property name="JOINT_NECK_1_UPPER_LIMIT" value="${radians(160)}"/>
+  <xacro:property name="JOINT_NECK_2_LOWER_LIMIT" value="${radians(-55)}"/>
+  <xacro:property name="JOINT_NECK_2_UPPER_LIMIT" value="${radians(30)}"/>
+
+  <xacro:property name="JOINT_ARM_R_1_LOWER_LIMIT" value="${radians(-160)}"/>
+  <xacro:property name="JOINT_ARM_R_1_UPPER_LIMIT" value="${radians(160)}"/>
+  <xacro:property name="JOINT_ARM_R_2_LOWER_LIMIT" value="${radians(-100)}"/>
+  <xacro:property name="JOINT_ARM_R_2_UPPER_LIMIT" value="${radians(80)}"/>
+  <xacro:property name="JOINT_ARM_R_3_LOWER_LIMIT" value="${radians(-50)}"/>
+  <xacro:property name="JOINT_ARM_R_3_UPPER_LIMIT" value="${radians(140)}"/>
+  <xacro:property name="JOINT_ARM_R_ADD4_LOWER_LIMIT" value="${radians(-160)}"/>
+  <xacro:property name="JOINT_ARM_R_ADD4_UPPER_LIMIT" value="${radians(160)}"/>
+  <xacro:property name="JOINT_ARM_R_HAND_LOWER_LIMIT" value="${radians(-15)}"/>
+  <xacro:property name="JOINT_ARM_R_HAND_UPPER_LIMIT" value="${radians(50)}"/>
+
+  <xacro:property name="JOINT_ARM_L_1_LOWER_LIMIT" value="${radians(-160)}"/>
+  <xacro:property name="JOINT_ARM_L_1_UPPER_LIMIT" value="${radians(160)}"/>
+  <xacro:property name="JOINT_ARM_L_2_LOWER_LIMIT" value="${radians(-80)}"/>
+  <xacro:property name="JOINT_ARM_L_2_UPPER_LIMIT" value="${radians(100)}"/>
+  <xacro:property name="JOINT_ARM_L_3_LOWER_LIMIT" value="${radians(-140)}"/>
+  <xacro:property name="JOINT_ARM_L_3_UPPER_LIMIT" value="${radians(50)}"/>
+  <xacro:property name="JOINT_ARM_L_ADD4_LOWER_LIMIT" value="${radians(-160)}"/>
+  <xacro:property name="JOINT_ARM_L_ADD4_UPPER_LIMIT" value="${radians(160)}"/>
+  <xacro:property name="JOINT_ARM_L_HAND_LOWER_LIMIT" value="${radians(-50)}"/>
+  <xacro:property name="JOINT_ARM_L_HAND_UPPER_LIMIT" value="${radians(15)}"/>
+
+  <xacro:property name="JOINT_LEG_R_1_LOWER_LIMIT" value="${radians(-90)}"/>
+  <xacro:property name="JOINT_LEG_R_1_UPPER_LIMIT" value="${radians(30)}"/>
+  <xacro:property name="JOINT_LEG_R_2_LOWER_LIMIT" value="${radians(-90)}"/>
+  <xacro:property name="JOINT_LEG_R_2_UPPER_LIMIT" value="${radians(90)}"/>
+  <xacro:property name="JOINT_LEG_R_3_LOWER_LIMIT" value="${radians(-110)}"/>
+  <xacro:property name="JOINT_LEG_R_3_UPPER_LIMIT" value="${radians(35)}"/>
+  <xacro:property name="JOINT_LEG_R_4_LOWER_LIMIT" value="${radians(-10)}"/>
+  <xacro:property name="JOINT_LEG_R_4_UPPER_LIMIT" value="${radians(130)}"/>
+  <xacro:property name="JOINT_LEG_R_5_LOWER_LIMIT" value="${radians(-45)}"/>
+  <xacro:property name="JOINT_LEG_R_5_UPPER_LIMIT" value="${radians(85)}"/>
+  <xacro:property name="JOINT_LEG_R_6_LOWER_LIMIT" value="${radians(-45)}"/>
+  <xacro:property name="JOINT_LEG_R_6_UPPER_LIMIT" value="${radians(90)}"/>
+
+  <xacro:property name="JOINT_LEG_L_1_LOWER_LIMIT" value="${radians(-30)}"/>
+  <xacro:property name="JOINT_LEG_L_1_UPPER_LIMIT" value="${radians(90)}"/>
+  <xacro:property name="JOINT_LEG_L_2_LOWER_LIMIT" value="${radians(-90)}"/>
+  <xacro:property name="JOINT_LEG_L_2_UPPER_LIMIT" value="${radians(90)}"/>
+  <xacro:property name="JOINT_LEG_L_3_LOWER_LIMIT" value="${radians(-35)}"/>
+  <xacro:property name="JOINT_LEG_L_3_UPPER_LIMIT" value="${radians(110)}"/>
+  <xacro:property name="JOINT_LEG_L_4_LOWER_LIMIT" value="${radians(-130)}"/>
+  <xacro:property name="JOINT_LEG_L_4_UPPER_LIMIT" value="${radians(10)}"/>
+  <xacro:property name="JOINT_LEG_L_5_LOWER_LIMIT" value="${radians(-85)}"/>
+  <xacro:property name="JOINT_LEG_L_5_UPPER_LIMIT" value="${radians(45)}"/>
+  <xacro:property name="JOINT_LEG_L_6_LOWER_LIMIT" value="${radians(-90)}"/>
+  <xacro:property name="JOINT_LEG_L_6_UPPER_LIMIT" value="${radians(45)}"/>
+
+
+  <xacro:property name="COLOR_LINK_BODY" value="white"/>
+  <xacro:muriqui_body/>
+
+  <xacro:property name="COLOR_LINK_HEAD" value="white"/>
+  <xacro:muriqui_head/>
+
+  <xacro:property name="COLOR_LINK_ARM" value="white"/>
+  <xacro:property name="COLOR_LINK_HAND" value="white"/>
+  <xacro:muriqui_right_arm/>
+
+  <xacro:property name="COLOR_LINK_ARM" value="white"/>
+  <xacro:property name="COLOR_LINK_HAND" value="white"/>
+  <xacro:muriqui_left_arm/>
+
+  <xacro:property name="COLOR_LINK_SENSORS" value="cyan"/>
+  <xacro:property name="COLOR_LINK_LEG" value="white"/>
+  <xacro:if value="$(arg feet_fsr)">
+    <xacro:muriqui_right_leg_fsr/>
+    <xacro:muriqui_left_leg_fsr/>
+  </xacro:if>
+  <xacro:unless value="$(arg feet_fsr)">
+    <xacro:muriqui_right_leg/>
+    <xacro:muriqui_left_leg/>
+  </xacro:unless>
+
+  <xacro:muriqui_sensors/>
+
+  <xacro:unless value="$(arg use_gazebo)" >
+    <xacro:muriqui_right_arm_ros2_control_settings/>
+    <xacro:muriqui_right_leg_ros2_control_settings/>
+
+    <xacro:muriqui_left_arm_ros2_control_settings/>
+    <xacro:muriqui_left_leg_ros2_control_settings/>
+
+    <xacro:muriqui_neck_ros2_control_settings/>
+  </xacro:unless>
+
+  <xacro:if value="$(arg use_gazebo)" >
+    <xacro:muriqui_gazebo_ros2_control_settings/>
+    <xacro:muriqui_gazebo_sensors/>
+  </xacro:if>
+
+</robot>

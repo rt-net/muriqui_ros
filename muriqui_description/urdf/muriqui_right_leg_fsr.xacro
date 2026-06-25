@@ -1,0 +1,289 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:macro name="muriqui_right_leg_fsr">
+
+    <joint name="${NAME_JOINT_LEG_R_1}" type="revolute">
+      <parent link="${NAME_LINK_BODY}" />
+      <child link="${NAME_LINK_LEG_R_1}" />
+      <origin xyz="0 -0.04 0" rpy="0 0 0"/>
+      <limit 
+        lower="${JOINT_LEG_R_1_LOWER_LIMIT}" 
+        upper="${JOINT_LEG_R_1_UPPER_LIMIT}" 
+        effort="${XM540_W270_EFFORT_LIMIT}" 
+        velocity="${XM540_W270_VELOCITY_LIMIT}"/>
+      <axis xyz="0 0 -1"/>
+      <dynamics damping="1.0e-6" friction="0.8"/>
+    </joint>
+
+    <link name="${NAME_LINK_LEG_R_1}">
+      <visual>
+        <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+        <geometry>
+          <mesh filename="${VISUAL_STL_FILE_PATH}/${NAME_LINK_LEG_R_1}.stl" scale="1.0 1.0 1.0"/>
+        </geometry>
+        <material name="${COLOR_LINK_LEG}"/>
+      </visual>
+      <xacro:generate_collision_tag>
+        <simple_origin>
+          <origin rpy="0 0 0" xyz="0.002 0.0 -0.025"/>
+        </simple_origin>
+        <simple_geometry>
+          <box size="0.06 0.03 0.05"/>
+        </simple_geometry>
+        <normal_origin>
+          <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+        </normal_origin>
+        <normal_geometry>
+          <mesh filename="${COLLISION_STL_FILE_PATH}/${NAME_LINK_LEG_R_1}.stl" scale="1.0 1.0 1.0"/>
+        </normal_geometry>
+      </xacro:generate_collision_tag>
+      <inertial>
+        <mass value="0.047541"/>
+        <origin xyz="5.375e-03 0e-03 -18.517e-03" rpy="0 0 0"/>
+        <inertia ixx="16330.216e-09" ixy="0e-09" iyy="37997.481e-09" ixz="4518.986e-09" iyz="0e-09" izz="28358.113e-09" />
+      </inertial>
+    </link>
+
+    <joint name="${NAME_JOINT_LEG_R_2}" type="revolute">
+      <parent link="${NAME_LINK_LEG_R_1}" />
+      <child link="${NAME_LINK_LEG_R_2}" />
+      <origin xyz="0 0 -0.041" rpy="0 0 0"/>
+      <limit 
+        lower="${JOINT_LEG_R_2_LOWER_LIMIT}" 
+        upper="${JOINT_LEG_R_2_UPPER_LIMIT}" 
+        effort="${XM540_W270_EFFORT_LIMIT}" 
+        velocity="${XM540_W270_VELOCITY_LIMIT}"/>
+      <axis xyz="-1 0 0"/>
+      <dynamics damping="1.0e-6" friction="0.8"/>
+    </joint>
+
+    <link name="${NAME_LINK_LEG_R_2}">
+      <visual>
+        <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+        <geometry>
+          <mesh filename="${VISUAL_STL_FILE_PATH}/${NAME_LINK_LEG_R_2}.stl" scale="1.0 1.0 1.0"/>
+        </geometry>
+        <material name="${COLOR_LINK_LEG}"/>
+      </visual>
+      <xacro:generate_collision_tag>
+        <simple_origin>
+          <origin rpy="0 0 0" xyz="-0.025 0.0 -0.015"/>
+        </simple_origin>
+        <simple_geometry>
+          <box size="0.11 0.045 0.06"/>
+        </simple_geometry>
+        <normal_origin>
+          <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+        </normal_origin>
+        <normal_geometry>
+          <mesh filename="${COLLISION_STL_FILE_PATH}/${NAME_LINK_LEG_R_2}.stl" scale="1.0 1.0 1.0"/>
+        </normal_geometry>
+      </xacro:generate_collision_tag>
+     <inertial>
+        <mass value="0.394765"/>
+        <origin xyz="-24.405e-03 0.435e-03 -17.937e-03" rpy="0 0 0"/>
+        <inertia ixx="188656.554e-09" ixy="-3766.078e-09" iyy="449942.021e-09" ixz="578.852e-09" iyz="-674.481e-09" izz="381302.142e-09" />
+      </inertial>
+    </link>
+
+    <joint name="${NAME_JOINT_LEG_R_3}" type="revolute">
+      <parent link="${NAME_LINK_LEG_R_2}" />
+      <child link="${NAME_LINK_LEG_R_3}" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <limit 
+        lower="${JOINT_LEG_R_3_LOWER_LIMIT}"
+        upper="${JOINT_LEG_R_3_UPPER_LIMIT}" 
+        effort="${XM540_W270_EFFORT_LIMIT}" 
+        velocity="${XM540_W270_VELOCITY_LIMIT}"/>
+      <axis xyz="0 1 0"/>
+      <dynamics damping="1.0e-6" friction="0.8"/>
+    </joint>
+
+    <link name="${NAME_LINK_LEG_R_3}">
+      <visual>
+        <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+        <geometry>
+          <mesh filename="${VISUAL_STL_FILE_PATH}/${NAME_LINK_LEG_R_3}.stl" scale="1.0 1.0 1.0"/>
+        </geometry>
+        <material name="${COLOR_LINK_LEG}"/>
+      </visual>
+      <xacro:generate_collision_tag>
+        <simple_origin>
+          <origin rpy="0 0 0" xyz="0.0 0.0 -0.058"/>
+        </simple_origin>
+        <simple_geometry>
+          <box size="0.04 0.07 0.15" />
+        </simple_geometry>
+        <normal_origin>
+          <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+        </normal_origin>
+        <normal_geometry>
+          <mesh filename="${COLLISION_STL_FILE_PATH}/${NAME_LINK_LEG_R_3}.stl" scale="1.0 1.0 1.0"/>
+        </normal_geometry>
+      </xacro:generate_collision_tag>
+      <inertial>
+        <mass value="0.281847"/>
+        <origin xyz="0.64e-03 0.582e-03 -83.084e-03" rpy="0 0 0"/>
+        <inertia ixx="439657.002e-09" ixy="317.2e-09" iyy="373878.203e-09" ixz="-609.861e-09" iyz="2683.323e-09" izz="132899.049e-09" />
+      </inertial>
+    </link>
+
+    <joint name="${NAME_JOINT_LEG_R_4}" type="revolute">
+      <parent link="${NAME_LINK_LEG_R_3}" />
+      <child link="${NAME_LINK_LEG_R_4}" />
+      <origin xyz="0 0 -0.12" rpy="0 0 0"/>
+      <limit 
+        lower="${JOINT_LEG_R_4_LOWER_LIMIT}" 
+        upper="${JOINT_LEG_R_4_UPPER_LIMIT}" 
+        effort="${XM540_W270_EFFORT_LIMIT}" 
+        velocity="${XM540_W270_VELOCITY_LIMIT}"/>
+      <axis xyz="0 1 0"/>
+      <dynamics damping="1.0e-6" friction="0.8"/>
+    </joint>
+
+    <link name="${NAME_LINK_LEG_R_4}">
+      <visual>
+        <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+        <geometry>
+          <mesh filename="${VISUAL_STL_FILE_PATH}/${NAME_LINK_LEG_R_4}.stl" scale="1.0 1.0 1.0"/>
+        </geometry>
+        <material name="${COLOR_LINK_LEG}"/>
+      </visual>
+      <xacro:generate_collision_tag>
+        <simple_origin>
+          <origin rpy="0 0 0" xyz="0.008 -0.002 -0.062"/>
+        </simple_origin>
+        <simple_geometry>
+          <box size="0.05 0.07 0.15" />
+        </simple_geometry>
+        <normal_origin>
+          <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+        </normal_origin>
+        <normal_geometry>
+          <mesh filename="${COLLISION_STL_FILE_PATH}/${NAME_LINK_LEG_R_4}.stl" scale="1.0 1.0 1.0"/>
+        </normal_geometry>
+      </xacro:generate_collision_tag>
+      <inertial>
+        <mass value="0.153814"/>
+        <origin xyz="4.588e-03 -0.084e-03 -53.245e-03" rpy="0 0 0"/>
+        <inertia ixx="326296.935e-09" ixy="-59.31e-09" iyy="243945.619e-09" ixz="-17321.881e-09" iyz="28.06e-09" izz="126011.213e-09" />
+      </inertial>
+    </link>
+
+    <joint name="${NAME_JOINT_LEG_R_5}" type="revolute">
+      <parent link="${NAME_LINK_LEG_R_4}" />
+      <child link="${NAME_LINK_LEG_R_5}" />
+      <origin xyz="0 0 -0.12" rpy="0 0 0"/>
+      <limit 
+        lower="${JOINT_LEG_R_5_LOWER_LIMIT}" 
+        upper="${JOINT_LEG_R_5_UPPER_LIMIT}" 
+        effort="${XM540_W270_EFFORT_LIMIT}" 
+        velocity="${XM540_W270_VELOCITY_LIMIT}"/>
+      <axis xyz="0 -1 0"/>
+      <dynamics damping="1.0e-6" friction="0.8"/>
+    </joint>
+
+    <link name="${NAME_LINK_LEG_R_5}">
+      <visual>
+        <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+        <geometry>
+          <mesh filename="${VISUAL_STL_FILE_PATH}/${NAME_LINK_LEG_R_5}.stl" scale="1.0 1.0 1.0"/>
+        </geometry>
+        <material name="${COLOR_LINK_LEG}"/>
+      </visual>
+      <xacro:generate_collision_tag>
+        <simple_origin>
+          <origin rpy="0 0 0" xyz="-0.037 0.0 0.015"/>
+        </simple_origin>
+        <simple_geometry>
+          <box size="0.08 0.035 0.06"/>
+        </simple_geometry>
+        <normal_origin>
+          <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+        </normal_origin>
+        <normal_geometry>
+          <mesh filename="${COLLISION_STL_FILE_PATH}/${NAME_LINK_LEG_R_5}.stl" scale="1.0 1.0 1.0"/>
+        </normal_geometry>
+      </xacro:generate_collision_tag>
+      <inertial>
+        <mass value="0.394072"/>
+        <origin xyz="-24.48e-03 0.436e-03 17.968e-03" rpy="0 0 0"/>
+        <inertia ixx="188430.25e-09" ixy="-3779.002e-09" iyy="448453.994e-09" ixz="-1109.37e-09" iyz="679.892e-09" izz="380037.191e-09" />
+      </inertial>
+    </link>
+
+    <joint name="${NAME_JOINT_LEG_R_6}" type="revolute">
+      <parent link="${NAME_LINK_LEG_R_5}" />
+      <child link="${NAME_LINK_LEG_R_6}" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <limit 
+        lower="${JOINT_LEG_R_6_LOWER_LIMIT}" 
+        upper="${JOINT_LEG_R_6_UPPER_LIMIT}" 
+        effort="${XM540_W270_EFFORT_LIMIT}" 
+        velocity="${XM540_W270_VELOCITY_LIMIT}"/>
+      <axis xyz="1 0 0"/>
+      <dynamics damping="1.0e-6" friction="0.8"/>
+    </joint>
+
+    <link name="${NAME_LINK_LEG_R_6}">
+      <visual>
+        <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+        <geometry>
+          <mesh filename="${VISUAL_STL_FILE_PATH}/${NAME_LINK_LEG_R_6}.stl" scale="1.0 1.0 1.0"/>
+        </geometry>
+        <material name="${COLOR_LINK_LEG}"/>
+      </visual>
+      <xacro:generate_collision_tag>
+        <simple_origin>
+          <origin rpy="0 0 0" xyz="0.0 -0.01 -0.033"/>
+        </simple_origin>
+        <simple_geometry>
+          <box size="0.13 0.08 0.02"/>
+        </simple_geometry>
+        <normal_origin>
+          <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+        </normal_origin>
+        <normal_geometry>
+          <mesh filename="${COLLISION_STL_FILE_PATH}/${NAME_LINK_LEG_R_6}.stl" scale="1.0 1.0 1.0"/>
+        </normal_geometry>
+      </xacro:generate_collision_tag>
+      <inertial>
+        <mass value="0.146149"/>
+        <origin xyz="1.821e-03 -7.852e-03 -33.39e-03" rpy="0 0 0"/>
+        <inertia ixx="93454.443e-09" ixy="-2514.113e-09" iyy="232511.492e-09" ixz="-6078.664e-09" iyz="-4728.861e-09" izz="283877.014e-09" />
+      </inertial>
+    </link>
+
+    <xacro:fsr_sensor_body 
+      parent_link_name="${NAME_LINK_LEG_R_6}"
+      joint_name="${NAME_JOINT_FSR_R_FR}"
+      link_name="${NAME_LINK_FSR_R_FR}">
+      <origin xyz="0.05 -0.03 -0.043" rpy="0 0 0"/>
+    </xacro:fsr_sensor_body>
+
+    <xacro:fsr_sensor_body 
+      parent_link_name="${NAME_LINK_LEG_R_6}"
+      joint_name="${NAME_JOINT_FSR_R_FL}"
+      link_name="${NAME_LINK_FSR_R_FL}">
+      <origin xyz="0.05 0.01 -0.043" rpy="0 0 0"/>
+    </xacro:fsr_sensor_body>
+
+    <xacro:fsr_sensor_body 
+      parent_link_name="${NAME_LINK_LEG_R_6}"
+      joint_name="${NAME_JOINT_FSR_R_RR}"
+      link_name="${NAME_LINK_FSR_R_RR}">
+      <origin xyz="-0.05 -0.03 -0.043" rpy="0 0 0"/>
+    </xacro:fsr_sensor_body>
+
+    <xacro:fsr_sensor_body 
+      parent_link_name="${NAME_LINK_LEG_R_6}"
+      joint_name="${NAME_JOINT_FSR_R_RL}"
+      link_name="${NAME_LINK_FSR_R_RL}">
+      <origin xyz="-0.05 0.01 -0.043" rpy="0 0 0"/>
+    </xacro:fsr_sensor_body>
+
+  </xacro:macro>
+
+</robot>

@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:macro name="muriqui_left_arm">
+
+    <joint name="${NAME_JOINT_ARM_L_1}" type="revolute">
+      <parent link="${NAME_LINK_BODY}" />
+      <child link="${NAME_LINK_ARM_L_1}" />
+      <origin xyz="0 0.072 0.132" rpy="0 0 0"/>
+      <limit 
+        lower="${JOINT_ARM_L_1_LOWER_LIMIT}" 
+        upper="${JOINT_ARM_L_1_UPPER_LIMIT}" 
+        effort="${XM430_W350_EFFORT_LIMIT}" 
+        velocity="${XM430_W350_VELOCITY_LIMIT}"/>
+      <axis xyz="0 1 0"/>
+      <dynamics damping="1.0e-6" friction="0.8"/>
+    </joint>
+
+    <link name="${NAME_LINK_ARM_L_1}">
+      <visual>
+        <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+        <geometry>
+          <mesh filename="${VISUAL_STL_FILE_PATH}/${NAME_LINK_ARM_L_1}.stl" scale="1.0 1.0 1.0"/>
+        </geometry>
+        <material name="${COLOR_LINK_ARM}"/>
+      </visual>
+      <xacro:generate_collision_tag>
+        <simple_origin>
+          <origin rpy="0 ${M_PI/2} 0" xyz="0.0 0.026 -0.01"/>
+        </simple_origin>
+        <simple_geometry>
+          <cylinder length="0.075" radius="0.03"/>
+        </simple_geometry>
+        <normal_origin>
+          <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+        </normal_origin>
+        <normal_geometry>
+          <mesh filename="${COLLISION_STL_FILE_PATH}/${NAME_LINK_ARM_L_1}.stl" scale="1.0 1.0 1.0"/>
+        </normal_geometry>
+      </xacro:generate_collision_tag>
+      <inertial>
+        <mass value="0.065533"/>
+        <origin xyz="-0.581e-03 20.003e-03 -9.038e-03" rpy="0 0 0"/>
+        <inertia ixx="30084.03e-09" ixy="463.158e-09" iyy="51275.365e-09" ixz="-100.217e-09" iyz="1578.236e-09" izz="54237.035e-09" />
+      </inertial>
+    </link>
+
+    <joint name="${NAME_JOINT_ARM_L_2}" type="revolute">
+      <parent link="${NAME_LINK_ARM_L_1}" />
+      <child link="${NAME_LINK_ARM_L_2}" />
+      <origin xyz="0 0.031 -0.0105" rpy="0 0 0"/>
+      <limit 
+        lower="${JOINT_ARM_L_2_LOWER_LIMIT}" 
+        upper="${JOINT_ARM_L_2_UPPER_LIMIT}" 
+        effort="${XM430_W350_EFFORT_LIMIT}" 
+        velocity="${XM430_W350_VELOCITY_LIMIT}"/>
+      <axis xyz="-1 0 0"/>
+      <dynamics damping="1.0e-6" friction="0.8"/>
+    </joint>
+
+    <link name="${NAME_LINK_ARM_L_2}">
+      <visual>
+        <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+        <geometry>
+          <mesh filename="${VISUAL_STL_FILE_PATH}/${NAME_LINK_ARM_L_2}.stl" scale="1.0 1.0 1.0"/>
+        </geometry>
+        <material name="${COLOR_LINK_ARM}"/>
+      </visual>
+      <xacro:generate_collision_tag>
+        <simple_origin>
+          <origin rpy="0 0 0" xyz="0.0 0.07 0.005"/>
+        </simple_origin>
+        <simple_geometry>
+          <box size="0.045 0.14 0.04"/>
+        </simple_geometry>
+        <normal_origin>
+          <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+        </normal_origin>
+        <normal_geometry>
+          <mesh filename="${COLLISION_STL_FILE_PATH}/${NAME_LINK_ARM_L_2}.stl" scale="1.0 1.0 1.0"/>
+        </normal_geometry>
+      </xacro:generate_collision_tag>
+      <inertial>
+        <mass value="0.254125"/>
+        <origin xyz="0.718e-03 60.71e-03 3.089e-03" rpy="0 0 0"/>
+        <inertia ixx="608433.562e-09" ixy="-276.347e-09" iyy="69057.241e-09" ixz="561.916e-09" iyz="976.274e-09" izz="620101.129e-09" />
+      </inertial>
+    </link>
+
+    <joint name="${NAME_JOINT_ARM_L_3}" type="revolute">
+      <parent link="${NAME_LINK_ARM_L_2}" />
+      <child link="${NAME_LINK_ARM_L_3}" />
+      <origin xyz="0 0.1245 0" rpy="0 0 0"/>
+      <limit 
+        lower="${JOINT_ARM_L_3_LOWER_LIMIT}"
+        upper="${JOINT_ARM_L_3_UPPER_LIMIT}" 
+        effort="${XM430_W350_EFFORT_LIMIT}" 
+        velocity="${XM430_W350_VELOCITY_LIMIT}"/>
+      <axis xyz="1 0 0"/>
+      <dynamics damping="1.0e-6" friction="0.8"/>
+    </joint>
+
+    <link name="${NAME_LINK_ARM_L_3}">
+      <visual>
+        <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+        <geometry>
+          <mesh filename="${VISUAL_STL_FILE_PATH}/${NAME_LINK_ARM_L_3}.stl" scale="1.0 1.0 1.0"/>
+        </geometry>
+        <material name="${COLOR_LINK_ARM}"/>
+      </visual>
+      <xacro:generate_collision_tag>
+        <simple_origin>
+          <origin rpy="0 0 0" xyz="0.0 0.095 0.01"/>
+        </simple_origin>
+        <simple_geometry>
+          <box size="0.055 0.15 0.02"/>
+        </simple_geometry>
+        <normal_origin>
+          <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+        </normal_origin>
+        <normal_geometry>
+          <mesh filename="${COLLISION_STL_FILE_PATH}/${NAME_LINK_ARM_L_3}.stl" scale="1.0 1.0 1.0"/>
+        </normal_geometry>
+      </xacro:generate_collision_tag>
+      <inertial>
+        <mass value="0.146398"/>
+        <origin xyz="0e-03 80.904e-03 8.589e-03" rpy="0 0 0"/>
+        <inertia ixx="386034.363e-09" ixy="-1.118e-09" iyy="62937.043e-09" ixz="2.696e-09" iyz="2546.637e-09" izz="422174.028e-09" />
+      </inertial>
+    </link>
+  </xacro:macro>
+
+</robot>

@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="muriqui_right_arm_ros2_control_settings">
+
+    <ros2_control name="muriqui_right_arm" type="system">
+      <xacro:unless value="${USE_RIGHT_ARM_MOCK}">
+        <hardware>
+          <plugin>muriqui_hardware/MuriquiHardware</plugin>
+          <param name="port_name">${RIGHT_ARM_PORT_NAME}</param>
+          <param name="manipulator_config_file_path">${RIGHT_ARM_CONFIG_PATH}</param>
+          <param name="baudrate">${BAUDRATE}</param>
+          <param name="timeout_seconds">${TIMEOUT_SECONDS}</param>
+        </hardware>
+      </xacro:unless>
+
+      <xacro:if value="${USE_RIGHT_ARM_MOCK}">
+        <hardware>
+          <plugin>mock_components/GenericSystem</plugin>
+        </hardware>
+      </xacro:if>
+
+      <joint name="${NAME_JOINT_ARM_R_1}">
+        <command_interface name="position">
+          <param name="min">${JOINT_ARM_R_1_LOWER_LIMIT}"</param>
+          <param name="max">${JOINT_ARM_R_1_UPPER_LIMIT}"</param>
+        </command_interface>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        <state_interface name="effort"/>
+        <param name="current_to_effort">1.78</param>
+      </joint>
+
+      <joint name="${NAME_JOINT_ARM_R_2}">
+        <command_interface name="position">
+          <param name="min">${JOINT_ARM_R_2_LOWER_LIMIT}"</param>
+          <param name="max">${JOINT_ARM_R_2_UPPER_LIMIT}"</param>
+        </command_interface>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        <state_interface name="effort"/>
+        <param name="current_to_effort">1.78</param>
+      </joint>
+
+      <xacro:if value="${ARM_4JOINTS}" >
+        <joint name="${NAME_JOINT_ARM_R_ADD4}">
+          <command_interface name="position">
+            <param name="min">${JOINT_ARM_R_ADD4_LOWER_LIMIT}"</param>
+            <param name="max">${JOINT_ARM_R_ADD4_UPPER_LIMIT}"</param>
+          </command_interface>
+          <state_interface name="position"/>
+          <state_interface name="velocity"/>
+          <state_interface name="effort"/>
+          <param name="current_to_effort">1.78</param>
+        </joint>
+      </xacro:if>
+
+      <joint name="${NAME_JOINT_ARM_R_3}">
+        <command_interface name="position">
+          <param name="min">${JOINT_ARM_R_3_LOWER_LIMIT}"</param>
+          <param name="max">${JOINT_ARM_R_3_UPPER_LIMIT}"</param>
+        </command_interface>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        <state_interface name="effort"/>
+        <param name="current_to_effort">1.78</param>
+      </joint>
+
+      <xacro:if value="${WITH_HAND}" >
+        <joint name="${NAME_JOINT_ARM_R_ADD4}">
+          <command_interface name="position">
+            <param name="min">${JOINT_ARM_R_ADD4_LOWER_LIMIT}"</param>
+            <param name="max">${JOINT_ARM_R_ADD4_UPPER_LIMIT}"</param>
+          </command_interface>
+          <state_interface name="position"/>
+          <state_interface name="velocity"/>
+          <state_interface name="effort"/>
+          <param name="current_to_effort">1.78</param>
+        </joint>
+
+        <joint name="${NAME_JOINT_ARM_R_HAND}">
+          <command_interface name="position">
+            <param name="min">${JOINT_ARM_R_HAND_LOWER_LIMIT}"</param>
+            <param name="max">${JOINT_ARM_R_HAND_UPPER_LIMIT}"</param>
+          </command_interface>
+          <state_interface name="position"/>
+          <state_interface name="velocity"/>
+          <state_interface name="effort"/>
+          <param name="current_to_effort">1.78</param>
+        </joint>
+      </xacro:if>
+
+    </ros2_control>
+  </xacro:macro>
+</robot>

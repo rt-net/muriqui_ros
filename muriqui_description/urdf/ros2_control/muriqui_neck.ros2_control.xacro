@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="muriqui_neck_ros2_control_settings">
+
+    <ros2_control name="muriqui_neck" type="system">
+      <xacro:unless value="${USE_NECK_MOCK}">
+        <hardware>
+          <plugin>muriqui_hardware/MuriquiHardware</plugin>
+          <param name="port_name">${NECK_PORT_NAME}</param>
+          <param name="manipulator_config_file_path">${NECK_CONFIG_PATH}</param>
+          <param name="baudrate">${BAUDRATE}</param>
+          <param name="timeout_seconds">${TIMEOUT_SECONDS}</param>
+        </hardware>
+      </xacro:unless>
+
+      <xacro:if value="${USE_NECK_MOCK}">
+        <hardware>
+          <plugin>mock_components/GenericSystem</plugin>
+        </hardware>
+      </xacro:if>
+
+      <joint name="${NAME_JOINT_NECK_1}">
+        <command_interface name="position">
+          <param name="min">${JOINT_NECK_1_LOWER_LIMIT}"</param>
+          <param name="max">${JOINT_NECK_1_UPPER_LIMIT}"</param>
+        </command_interface>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        <state_interface name="effort"/>
+        <param name="current_to_effort">1.78</param>
+      </joint>
+
+      <joint name="${NAME_JOINT_NECK_2}">
+        <command_interface name="position">
+          <param name="min">${JOINT_NECK_2_LOWER_LIMIT}"</param>
+          <param name="max">${JOINT_NECK_2_UPPER_LIMIT}"</param>
+        </command_interface>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        <state_interface name="effort"/>
+        <param name="current_to_effort">1.78</param>
+      </joint>
+
+    </ros2_control>
+  </xacro:macro>
+</robot>

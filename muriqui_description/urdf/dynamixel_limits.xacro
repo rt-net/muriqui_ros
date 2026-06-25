@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- 0.10472 is the conversion factor from RPM to rad/s -->
+  <xacro:property name="TO_RPS" value="0.10472"/>
+
+  <!-- https://emanual.robotis.com/docs/en/dxl/x/xm430-w350/ -->
+  <xacro:property name="XM430_W350_EFFORT_LIMIT" value="3.0"/>
+  <xacro:property name="XM430_W350_VELOCITY_LIMIT" value="${46 * TO_RPS}"/>
+
+  <!-- https://emanual.robotis.com/docs/en/dxl/x/xm540-w270/ -->
+  <xacro:property name="XM540_W270_EFFORT_LIMIT" value="8.6"/>
+  <xacro:property name="XM540_W270_VELOCITY_LIMIT" value="${30 * TO_RPS}"/>
+
+  <!-- https://emanual.robotis.com/docs/en/dxl/x/xc330-t288/ -->
+  <xacro:property name="XC330_T288_EFFORT_LIMIT" value="0.92"/>
+  <xacro:property name="XC330_T288_VELOCITY_LIMIT" value="${63 * TO_RPS}"/>
+
+</robot>
