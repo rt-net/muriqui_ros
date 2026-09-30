@@ -1,5 +1,7 @@
 # muriqui_ros
 
+<img src=.image/Muriqui.jpg width=280px/><img src=.image/muriqui_gazebo_ros2.png width=360px/>
+
 ## Requirements
 
 - ROS 2 Humble Hawksbill
