@@ -10,7 +10,7 @@
 
 #include "controller_interface/controller_interface.hpp"
 #include "geometry_msgs/msg/wrench_stamped.hpp"
-#include "realtime_tools/realtime_publisher.h"
+#include "realtime_tools/realtime_publisher.hpp"
 
 namespace feet_fsr_broadcaster
 {

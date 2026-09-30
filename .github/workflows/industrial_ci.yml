@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         env:
-          - { ROS_DISTRO: humble, ROS_REPO: ros }
+          - { ROS_DISTRO: humble, ROS_REPO: ros , UPSTREAM_WORKSPACE: muriqui_ros.humble.repos }
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

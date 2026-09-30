@@ -1,0 +1,5 @@
+repositories:
+    rt_manipulators_cpp:
+        type: git
+        url: https://github.com/rt-net/rt_manipulators_cpp.git
+        version: humble
