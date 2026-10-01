@@ -13,7 +13,8 @@
 ```bash
 mkdir -p ~/muriqui_ws/src
 cd ~/muriqui_ws/src
-# Download muriqui_ros, muriqui_description, muriqui_msgs and rt_manipulators_cpp here
+git clone https://github.com/rt-net/muriqui_ros.git
+git clone -b humble https://github.com/rt-net/rt_manipulators_cpp.git
 ```
 
 ### Install dependencies
