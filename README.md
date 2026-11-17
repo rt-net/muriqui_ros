@@ -2,6 +2,9 @@
 
 <img src=.image/Muriqui.jpg width=280px/><img src=.image/muriqui_gazebo_ros2.png width=360px/>
 
+Muriqui is a customizable humanoid robot approximately 50 cm tall.  
+For hardware information, see the [muriqui_hardware repository](https://github.com/rt-net/muriqui_hardware).  
+
 ## Requirements
 
 - ROS 2 Humble Hawksbill
